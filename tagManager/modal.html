@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Tag Manager</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <form class="form container">
+        <div class="form-group">
+            <label for="selected-tags">Select tags... </label>
+
+            <ui-select multiple
+                       tagging
+                       ng-model="data.selectedTags"
+                       style="width: 300px;"
+                       title="Choose a tag"
+                       tagging-label=false
+                       autofocus="true"
+                       input-id="selected-tags">
+                <ui-select-match class="ui-select-match" placeholder="Select tags...">{{$item}}</ui-select-match>
+                <ui-select-choices class="ui-select-choices" position="down" repeat="tag in data.availableTags | filter:$select.search">
+                    {{tag}}
+                </ui-select-choices>
+            </ui-select>
+            <p>Selected: {{data.selectedTags}}</p>
+            <p class="help-block">Type out the tags you want to add to the selected images</p>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="data.selectedTags.length < 1">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,19 @@
+As a user I want
+    the program to tell me if there are any new files when I open the program.
+    to be able to brows all the new, tagless files
+    to be able to add tags to multiple new files.
+    to browse the tags I have added.
+    the program to help suggest tags as I type them.
+    the program to suggest related tags.
+    to have related tags added.
+    to have syntactically similar words relate to the same tag (eg, skirt - skirts).
+    filter images based on tags.
+    add new directories to include.
+    export my data.
+    scan for duplicate images.
+    link tags to image files if the file path changes.
+
+As a developer I want
+    to arrange tags hierachically (eg, skirt -> clothes).
+    filter out certain directories and file types from being scanned.
+    to bundle all dependencies into one installer package for easy distribution.

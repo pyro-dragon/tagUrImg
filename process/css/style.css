@@ -1,0 +1,49 @@
+img{
+    max-width: 300px;
+    max-height: 300px;
+    cursor: pointer;
+}
+
+img:hover{
+    margin-right: -41px;
+}
+
+img:hover + .delete {
+
+    display: inline-block;
+        position: relative;
+        top: 10px;
+        right: 10px;
+        vertical-align: top;
+}
+
+.delete{
+
+        display: none;
+}
+
+img:hover ~ .test{
+    display: block;
+    color: red;
+}
+
+.test{
+    display: none;
+}
+
+img.selected{
+    border: solid green 4px;
+}
+
+.image{
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.image-container {
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+	justify-content: space-between;
+    padding: 15px;
+}
