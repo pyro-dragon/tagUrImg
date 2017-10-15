@@ -1,0 +1,21 @@
+<h2>Settings</h2>
+
+<p>
+	Config: {{config}}
+</p>
+
+<form class="form container">
+	<div class="input-group row" style="width: 100%">
+		<label for="showHints" class="col-md-2">Show Hints: </label>
+		<input id="showHints" type="checkbox" class="col-md-10" ng-model="config.showHints" />
+	</div>
+	<div class="input-group row">
+		<label for="itemsPerPage" class="col-md-2">Show Hints: </label>
+		<input id="itemsPerPage" type="number" class="col-md-10" ng-model="config.itemsPerPage" />
+	</div>
+	<div class="input-group row" ng-repeat="dir in config.directories track by $index">
+		<label ng-class="{'sr-only':!$first}" class="col-md-2" >Directories: </label>
+		<input id="{{'dir' + $index}}" type="text" class="col-md-10" ng-model="config.directories[$index]" />
+	</div>
+	<button ng-click="addDir()" ng-disabled="!canAddDir()">+</button>
+</form>
