@@ -1,6 +1,6 @@
 angular.module("utils").service("utilityCalls", function()
 {
-	this.putImage = function(image, success, fail)
+    this.putImage = function(image, success, fail)
     {
         insertData(image, db,
             function (result)
@@ -18,13 +18,13 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    };
+    }
 
     this.getNewDocs = function(success, fail, startKey, endKey)
     {
         var options = {include_docs: true};
-        options.startkey = startKey? startKey : options.limit = 20;
-        options.endkey = endKey? endKey : false;
+        startKey? options.startkey = startKey: options.limit = 20;
+        endKey? options.endkey = endKey:false;
         newDocsQuery(false, options,
             function (result)
             {
@@ -81,7 +81,7 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    };
+    }
 
     this.getAllTags = function(success, fail)
     {
@@ -109,15 +109,15 @@ angular.module("utils").service("utilityCalls", function()
                     fail(error);
                 }
             }
-        );
-    };
+        )
+    }
 
     var imageTagsQuery = function(options, success, fail)
     {
         db.query("main/getTags", options)
         .then(success)
         .catch(fail);
-    };
+    }
 
     var newDocsQuery = function(reduce, options, success, fail)
     {
@@ -125,30 +125,7 @@ angular.module("utils").service("utilityCalls", function()
         db.query("main/getNew", options)
         .then(success)
         .catch(fail);
-    };
-
-	// Get the database config
-	this.getConfig = function(success, fail)
-	{
-		db.get("config", function (error, response)
-		{
-			if(error)
-			{
-				console.log("Error getting config: " + error);
-
-				if(typeof fail === "function")
-				{
-					fail(error);
-				}
-			}
-			else {
-				if(typeof success === "function")
-				{
-					success(response);
-				}
-			}
-		});
-	};
+    }
 
     // Basic data insert function
     var insertData = function(data, db, success, fail)
@@ -165,5 +142,5 @@ angular.module("utils").service("utilityCalls", function()
             .then(success)
             .catch(fail);
         }
-    };
+    }
 });

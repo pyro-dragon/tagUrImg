@@ -7,7 +7,6 @@ angular.module("indexModule", [
     "utils",
     "confirmationDialogueModule",
     "tagManagerModule",
-	"settingsModule",
     "browseModule",
     "processModule"]);
 

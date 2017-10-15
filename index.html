@@ -30,9 +30,6 @@
         <script src="tagManager/script/tagManagerModule.js"></script>
         <script src="tagManager/script/tagManagerController.js"></script>
 
-        <script src="settings/js/settingsModule.js"></script>
-        <script src="settings/js/settingsController.js"></script>
-
         <script src="browse/js/browseModule.js"></script>
         <script src="browse/js/browseController.js"></script>
         <link rel="stylesheet" type="text/css" href="browse/css/style.css">
@@ -72,9 +69,6 @@
 						</li>
 						<li ng-class="getLocation('/process')? 'active' : ''">
 							<a href="#/process">Process <span class="badge" ng-if="getNewCount().value">{{getNewCount().value}}</span></a>
-						</li>
-						<li ng-class="getLocation('/settings')? 'active' : ''">
-							<a href="#/settings">Settings</a>
 						</li>
 					</ul>
 				</div>

@@ -1,18 +1,7 @@
 angular.module("indexModule").controller("indexController", ["$scope", "scanner", "utilityCalls", function($scope, scanner, utilityCalls)
 {
-	$scope.files = [];
-
     // Scan the file system
-	utilityCalls.getConfig(function(config)
-	{
-		if(config.directories)
-		{
-			angular.forEach(config.directories, function(dir)
-			{
-				$scope.files.concat(scanner.scan(dir));
-			});
-		}
-	});
+	$scope.files = scanner.scan("/home/bob/Dropbox/Pictures/Comissions");
 
 	// Insert the files into the DB
 	angular.forEach($scope.files, function(file)

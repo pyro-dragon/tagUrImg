@@ -55,32 +55,7 @@ db.get("_design/main", function (error, response) {
         }
     }
     else {
-        console.log("Main design document exists.");
-    }
-});
-
-// Init the program options
-db.get("config", function (error, response) {
-    if(error && error.status === 404)
-    {
-        var ddoc = {
-            _id: 'config',
-            //_rev: "",
-            directories: [],
-			firstTime: true,
-			showHints: true,
-			itemsPerPage: 40
-        };
-
-        db.put(ddoc).then(function(){
-            console.log("Created the config doc");
-        }).catch(function(error){
-            console.log("An error occured creating the config doc: " + error);
-        });
-    }
-    else
-    {
-        console.log("Config document exists.");
+        console.log("Main design document exists.")
     }
 });
 

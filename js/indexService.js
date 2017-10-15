@@ -18,7 +18,7 @@ angular.module("indexModule").service("scanner", function()
     					}
     					else{
     						// do stuff with path
-    						self.files.push(currentPath);
+    						self.files.push(currentPath)
     					}
     				}
                 }
@@ -27,10 +27,10 @@ angular.module("indexModule").service("scanner", function()
                     console.log("Error scanning directories: " + err);
                 }
 			});
-		};
+		}
 
 		this.findFiles(path);
 
 		return this.files;
-	};
+	}
 });
