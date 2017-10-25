@@ -1,7 +1,18 @@
 angular.module("indexModule").controller("indexController", ["$scope", "scanner", "utilityCalls", function($scope, scanner, utilityCalls)
 {
+	$scope.files = [];
+
     // Scan the file system
-	$scope.files = scanner.scan("/home/bob/Dropbox/Pictures/Comissions");
+	utilityCalls.getConfig(function(config)
+	{
+		if(config.directories)
+		{
+			angular.forEach(config.directories, function(dir)
+			{
+				$scope.files.concat(scanner.scan(dir));
+			});
+		}
+	});
 
 	// Insert the files into the DB
 	angular.forEach($scope.files, function(file)
@@ -18,6 +29,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     var currentNewCount = {
         value: 0
     };
+    
     $scope.getNewCount = function()
     {
         utilityCalls.getNewDocCount(

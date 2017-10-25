@@ -1,0 +1,57 @@
+<h2>Settings</h2>
+
+<p>
+	Config: {{config}}
+</p>
+
+<form class="form container-fluid">
+	<div class="form-group row">
+        <div class="col-md-2">
+			<label for="itemsPerPage">Items per page: </label>
+        </div>
+		<div class="col-md-10">
+    		<input id="itemsPerPage" type="number" class="form-control" ng-model="config.itemsPerPage" ng-disabled="status === 'submitted'" ng-change="formChanged()" />
+        </div>
+	</div>
+	<div class="row form-group">
+        <div class="checkbox col-md-12">
+            <label for="showHints">
+                <input id="showHints" type="checkbox" ng-model="config.showHints" ng-disabled="status === 'submitted'" ng-change="formChanged()"> Show Hints
+            </label>
+        </div>
+	</div>
+    <hr />
+    <h3>Directories to scan</h3>
+	<div class="form-group row" ng-repeat="dir in config.directories track by $index">
+        <div class="col-md-2">
+    		<label ng-class="{'sr-only':!$first}" class="col-md-2" for="directory{{$index}}">Directories: </label>
+        </div>
+        <div class="col-md-10">
+            <div class="input-group">
+                <input id="directory{{$index}}" type="text" class="form-control" placeholder="Directory..." ng-model="config.directories[$index]" ng-disabled="status === 'submitted'" ng-change="formChanged()">
+                <span class="input-group-btn">
+                    <button class="btn btn-danger" ng-click="removePath($index)" type="button" ng-disabled="status === 'submitted'"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                </span>
+            </div>
+        </div>
+	</div>
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+            <button ng-click="addDir()" class="btn btn-success" ng-disabled="!canAddDir()" ng-disabled="status === 'submitted'">Add another directory</button>
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<div ng-if="status==='error'" class="alert alert-danger">
+    There was an error saving the settings: {{error}}
+</div>
+<div ng-if="status==='success'" class="alert alert-success">
+    The settings were saved successfully
+</div>
+<div class="form-footer">
+    <span class="button-container"><button class="btn btn-danger" ng-click="revert()" ng-disabled="!modified">Revert Changes</button> <button class="btn btn-success" ng-click="save()" ng-disabled="!modified">Save Changes</button></span>
+</div>

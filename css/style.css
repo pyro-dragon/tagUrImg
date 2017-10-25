@@ -18,6 +18,13 @@ header time {
     float: right;
 }
 
+hr {
+    height: 1px;
+    background-color:#ccc;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .navbar {
 	margin-bottom: 0;
 	border-radius: 0;

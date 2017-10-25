@@ -16,6 +16,11 @@ angular.module("indexModule").config(function($routeProvider)
         controller: "processController",
         css: "process/css/style.css"
     })
+	.when("/settings", {
+		templateUrl: "settings/partial.html",
+		controller: "settingsController",
+        css: "settings/css/style.css"
+	})
 	.when("/article/:articleLink", {
 		templateUrl: "process/partial.html",
 		controller: "articleController",

@@ -1,6 +1,6 @@
 angular.module("utils").service("utilityCalls", function()
 {
-    this.putImage = function(image, success, fail)
+	this.putImage = function(image, success, fail)
     {
         insertData(image, db,
             function (result)
@@ -18,13 +18,13 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    }
+    };
 
     this.getNewDocs = function(success, fail, startKey, endKey)
     {
         var options = {include_docs: true};
-        startKey? options.startkey = startKey: options.limit = 20;
-        endKey? options.endkey = endKey:false;
+        startKey ? options.startkey = startKey : options.limit = 20;
+        endKey ? options.endkey = endKey : null;
         newDocsQuery(false, options,
             function (result)
             {
@@ -81,7 +81,7 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    }
+    };
 
     this.getAllTags = function(success, fail)
     {
@@ -109,23 +109,69 @@ angular.module("utils").service("utilityCalls", function()
                     fail(error);
                 }
             }
-        )
+        );
+    };
+
+    // Save system configuration document
+    this.saveConfig = function(config, success, fail)
+    {
+        insertData(config, db,
+            function()
+            {
+                if(typeof success === 'function')
+                {
+                    success();
+                }
+            },
+            function(error)
+            {
+                if(typeof fail === 'function')
+                {
+                    fail(error);
+                }
+            }
+        );
     }
 
+    // Return all the image tags in the database
     var imageTagsQuery = function(options, success, fail)
     {
         db.query("main/getTags", options)
         .then(success)
         .catch(fail);
-    }
+    };
 
+    // Return all docs labeled as new
     var newDocsQuery = function(reduce, options, success, fail)
     {
         options.reduce = reduce? true:false;
         db.query("main/getNew", options)
         .then(success)
         .catch(fail);
-    }
+    };
+
+	// Get the database config
+	this.getConfig = function(success, fail)
+	{
+		db.get("config", function (error, response)
+		{
+			if(error)
+			{
+				console.log("Error getting config: " + error);
+
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+			else {
+				if(typeof success === "function")
+				{
+					success(response);
+				}
+			}
+		});
+	};
 
     // Basic data insert function
     var insertData = function(data, db, success, fail)
@@ -142,5 +188,5 @@ angular.module("utils").service("utilityCalls", function()
             .then(success)
             .catch(fail);
         }
-    }
+    };
 });
