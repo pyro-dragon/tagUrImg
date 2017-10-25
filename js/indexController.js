@@ -29,6 +29,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     var currentNewCount = {
         value: 0
     };
+    
     $scope.getNewCount = function()
     {
         utilityCalls.getNewDocCount(
