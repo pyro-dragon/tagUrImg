@@ -4,6 +4,9 @@
 <p>
     Selected Items: {{selectedCount}}
 </p>
+<div class="alert alert-danger" ng-if="error">
+  <strong>Error!</strong> {{error}}
+</div>
 <div class="image-container">
     <div ng-repeat="image in currentImages" class="image">
         <img ng-class="{'selected':selectedImages[image.id]}" ng-src="{{image.id}}" ng-click="selectImage(image)" />

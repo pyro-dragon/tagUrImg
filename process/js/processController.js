@@ -14,14 +14,8 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                 if($scope.selectedImages[imageID].doc.tags === undefined || $scope.selectedImages[imageID].doc.tags.length === 0)
                 {
                     console.log("Not every selected image has tags set.");
-                    alert("Not every selected image has tags set.");
+                    $scope.error = "Not every selected image has tags set.";
                     return;
-                }
-                else {
-                    // Extract the doc data for sending
-                    $scope.selectedImages[imageID] = $scope.selectedImages[imageID].doc;
-                    $scope.selectedImages[imageID].new = false;
-                    $scope.modified = Date.now();
                 }
             }
         }
@@ -40,11 +34,28 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                     optionsObject.body = "Save the currently selected images?";
                     optionsObject.yesAction = function()
                     {
-                        utilityCalls.putImage($scope.selectedImages,
+                        // Extract the data to save
+                        var extractedData = [];
+                        angular.forEach($scope.selectedImages, function(image)
+                        {
+                            image.doc.modified = Date.now();
+                            image.doc.new = false
+                            extractedData.push(image.doc);
+                        });
+
+                        utilityCalls.putImage(extractedData,
                         function()
                         {
                             console.log("success!");
+
+                            angular.forEach($scope.selectedImages, function(selectedImage)
+                            {
+                                var index = $scope.currentImages.indexOf(selectedImage);
+                                $scope.currentImages.splice($scope.currentImages.indexOf(selectedImage), 1);
+                            });
+
                             $scope.selectedImages = {};
+                            $scope.selectedCount = 0;
                         },
                         function(err)
                         {
@@ -56,15 +67,6 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                 }
             }
         });
-        // modalInstance.result
-        //     .then(function ()
-        //     {
-        //
-        //     })
-        //     .catch(function()
-        //     {
-        //
-        //     });
     }
 
     $scope.openTagManager = function (selectedImages)
@@ -102,6 +104,8 @@ angular.module("processModule", []).controller("processController", ["$scope", "
             $scope.selectedImages[image.id] = image;
             $scope.selectedCount++;
         }
+
+        delete $scope.error;
     }
 
     // Get the new items
