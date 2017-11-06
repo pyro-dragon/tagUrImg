@@ -1,1 +1,13 @@
 <h2>Browse</h2>
+<form class="inline-form">
+    <div class="form-group">
+        <label for="search">Search</label>
+        <input type="text" id="search" class="form-control" ng-model="searchParams" />
+        <button class="btn btn-primary" ng-click="search()">Search</button>
+    </div>
+</form>
+<div>
+    <div ng-repeat="image in displayImages">
+        <img src="{{image._id}}" />
+    </div>
+</div>
