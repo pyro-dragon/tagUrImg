@@ -31,4 +31,9 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
             search(termsArray);
         }
     }
+
+    $scope.openImage = function(path)
+    {
+        shell.openItem(path);
+    }
 }]);

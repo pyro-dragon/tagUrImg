@@ -12,22 +12,24 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     		{
     			angular.forEach(config.directories, function(dir)
     			{
-    				$scope.files.concat(scanner.scan(dir));
+                    var recoveredFiles = scanner.scan(dir);
+    				var joinedFiles = $scope.files.concat(recoveredFiles);
+                    $scope.files = joinedFiles;
     			});
     		}
+
+            // Insert the files into the DB
+        	angular.forEach($scope.files, function(file)
+        	{
+        		db.get(file, function (error, response) {
+                    if(error && error.status == 404){
+                        db.put({_id: file, tags: [], dateAdded: Date.now(), new: true});
+            			console.log("Document created");
+                    }
+        		});
+        	});
     	});
     }
-
-	// Insert the files into the DB
-	angular.forEach($scope.files, function(file)
-	{
-		db.get(file, function (error, response) {
-            if(error && error.status == 404){
-                db.put({_id: file, tags: [], dateAdded: Date.now(), new: true});
-    			console.log("Document created");
-            }
-		});
-	});
 
     // Wrap in an object so that we can pass by reference
     var currentNewCount = {

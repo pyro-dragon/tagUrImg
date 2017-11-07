@@ -3,11 +3,11 @@
     <div class="input-group">
         <label for="search" class="sr-only">Search</label>
         <input type="text" id="search" class="form-control" placeholder="Tags..." ng-model="searchParams" />
-        <span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="search()">Search</button></span>
+        <span class="input-group-btn"><button class="btn btn-default" type="submit" ng-click="search()">Search</button></span>
     </div>
 </form>
 <div class="gallery-container">
     <div class="gallery-image" ng-repeat="image in displayImages">
-        <img src="{{image._id}}" />
+        <img src="{{image._id}}" ng-click="openImage(image._id)" />
     </div>
 </div>
