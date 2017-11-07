@@ -1,4 +1,6 @@
-const fs = require("fs")
+const fs = require("fs");
+const shell = require('electron').shell;
+const path = require('path');
 const PouchDB = require('pouchdb-browser');
 PouchDB.plugin(require('pouchdb-find'));
 
