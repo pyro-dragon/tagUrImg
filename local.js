@@ -1,5 +1,6 @@
 const fs = require("fs")
 const PouchDB = require('pouchdb-browser');
+PouchDB.plugin(require('pouchdb-find'));
 
 // As an indexed DB
 var db = new PouchDB('mydb');
@@ -27,7 +28,7 @@ db.get("_design/main", function (error, response) {
                         map: function(doc){
                             if(doc.new === undefined || doc.new === true)
                             {
-                                emit(true);
+                                emit();
                             }
                         }.toString(),
                         reduce: '_count'
@@ -36,7 +37,7 @@ db.get("_design/main", function (error, response) {
                         map: function(doc) {
                             if(doc.tags && doc.tags.length > 0) {
                                 for(var idx in doc.tags) {
-                                    emit(doc.tags[idx], null);
+                                    emit(doc.tags[idx]);
                                 }
                             }
                         }.toString()
@@ -58,6 +59,42 @@ db.get("_design/main", function (error, response) {
         console.log("Main design document exists.");
     }
 });
+
+// Create tagging index
+db.createIndex(
+    {
+        //fields: [{"name": "tags.[]", "type": "string"}],
+        fields: [
+            {
+                name: "tags.[]",
+                type: "string"
+            }
+        ],
+        name: "tag_index"
+    });
+// ).then(function(){
+//     db.find(
+//         {
+//             selector: {"tags": { "$all": ["magic user", "female"]}}
+//             //ddoc: "my-index-design-doc"
+//         }
+//     )
+//     .then(
+//         function(result)
+//         {
+//             console.log("Results success: " );
+//             console.log(result);
+//         }
+//     )
+//     .catch(
+//         function(error)
+//         {
+//             console.log("Results fail: " + error);
+//         }
+//     );
+// });
+
+PouchDB.debug.enable('pouchdb:find');
 
 // Init the program options
 db.get("config", function (error, response) {

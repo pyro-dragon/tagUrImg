@@ -1,4 +1,34 @@
-angular.module("browseModule").controller("browseController", ["$scope", function($scope)
+angular.module("browseModule").controller("browseController", ["$scope", "utilityCalls", function($scope, utilityCalls)
 {
-    
+    $scope.displayImages = [];
+
+    // Do an initial search
+    function search(params){
+
+        if(Array.isArray(params))
+        {
+            utilityCalls.getImagesByTags(params,
+                function(results)
+                {
+                    console.log("success!");
+                    $scope.displayImages = results;
+                },
+                function(error)
+                {
+                    console.log("Error!");
+                }
+            );
+        }
+    };
+
+
+    $scope.search = function()
+    {
+        if($scope.searchParams)
+        {
+            var termsArray = $scope.searchParams.split(" ");
+
+            search(termsArray);
+        }
+    }
 }]);

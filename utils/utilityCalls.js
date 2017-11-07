@@ -112,6 +112,11 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.getMatchingTags = function(tags)
+    {
+
+    }
+
     // Save system configuration document
     this.saveConfig = function(config, success, fail)
     {
@@ -172,6 +177,50 @@ angular.module("utils").service("utilityCalls", function()
 			}
 		});
 	};
+
+    this.getImagesByTags = function(tags, success, fail)
+    {
+        db.find(
+            {
+                selector: {"tags": { "$all": tags}},
+                limit: 40
+            }
+        )
+        .then(
+            function(result)
+            {
+                if(typeof success === "function")
+                {
+                    success(result.docs);
+                }
+            }
+        )
+        .catch(
+            function(error)
+            {
+                if(typeof fail === "function")
+                {
+                    fail(error);
+                }
+            }
+        );
+    }
+
+    // Basic data fetch function
+    var getData = function(keys, db, success, fail)
+    {
+        if(Array.isArray(keys))
+        {
+            db.allDocs({keys: keys})
+            .then(success)
+            .catch(fail);
+        }
+        else{
+            db.get(key)
+            .then(success)
+            .catch(fail);
+        }
+    }
 
     // Basic data insert function
     var insertData = function(data, db, success, fail)
