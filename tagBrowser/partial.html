@@ -1,0 +1,32 @@
+<h2>Tag Manager</h2>
+
+
+<form class="form pull-right well">
+    <div class="form-group">
+        <label for="tagName">Tag Name</label>
+        <input type="text" id="tagName" class="form-control" ng-model="activeTag.name" />
+    </div>
+    <div class="form-group">
+        <label for="tagDescription">Tag Description</label>
+        <textarea id="tagDescription" class="form-control" ng-model="activeTag.description"></textarea>
+    </div>
+    <button class="btn btn-success" ng-click="saveChanges()">Save changes</button>
+</form>
+
+<form class="form well">
+    <div class="form-group">
+        <label for="filterTags" class="sr-only">Filter tags</label>
+        <input type="text" ng-model=search class="form-control" id="filterTags" placeholder="Filter tags..." />
+    </div>
+
+    <div class="">
+        <ul class="list-group tag-list">
+            <li class="list-group-item" ng-class="{'active': tag === activeTag}" ng-repeat="tag in tags | filter: search | orderBy: 'name'" ng-click="setActiveTag(tag)">
+                <span>
+                    {{tag.name}}
+                </span>
+                <span><button class="btn btn-danger btn-xs pull-right" ng-click="deleteTag(tag)"><i class="fa fa-trash-o" aria-hidden="true"></i></button></span>
+            </li>
+        </ul>
+    </div>
+</form>

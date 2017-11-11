@@ -9,7 +9,8 @@ angular.module("indexModule", [
     "tagManagerModule",
 	"settingsModule",
     "browseModule",
-    "processModule"]);
+    "processModule",
+    "tagBrowserModule"]);
 
 angular.module("indexModule").config(['$locationProvider', function($locationProvider)
 {

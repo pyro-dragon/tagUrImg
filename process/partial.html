@@ -4,6 +4,9 @@
 <p>
     Selected Items: {{selectedCount}}
 </p>
+<p ng-if="loading">
+    Loading...
+</p>
 <div class="alert alert-danger" ng-if="error">
   <strong>Error!</strong> {{error}}
 </div>

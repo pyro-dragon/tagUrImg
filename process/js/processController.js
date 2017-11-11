@@ -3,6 +3,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
     $scope.currentImages = [];
     $scope.selectedImages = {};
     $scope.selectedCount = 0;
+    $scope.loading = false;
 
     $scope.saveSelected = function(){
 
@@ -39,7 +40,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                         angular.forEach($scope.selectedImages, function(image)
                         {
                             image.doc.modified = Date.now();
-                            image.doc.new = false
+                            image.doc.new = false;
                             extractedData.push(image.doc);
                         });
 
@@ -59,7 +60,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                         },
                         function(err)
                         {
-                            console.log("Error: " + err)
+                            console.log("Error: " + err);
                         });
                     };
 
@@ -67,7 +68,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                 }
             }
         });
-    }
+    };
 
     $scope.openTagManager = function (selectedImages)
     {
@@ -88,7 +89,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
             angular.forEach(selectedImages, function(image)
             {
                 image.doc.tags = Array.from(new Set(image.doc.tags.concat(newTags))) ;
-            })
+            });
         });
     };
 
@@ -106,14 +107,24 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         }
 
         delete $scope.error;
-    }
+    };
 
     // Get the new items
     function getOutstandingItems()
     {
-        utilityCalls.getNewDocs(function(result){
-            $scope.currentImages = result;
-        });
+        $scope.loading = true;
+        utilityCalls.getNewDocs(
+            function(result)
+            {
+                $scope.loading = false;
+                $scope.currentImages = result;
+            },
+            function(error)
+            {
+                $scope.loading = false;
+                console.log("Error getting outstanding items: " + error);
+            }
+        );
     }
 
     function init()
