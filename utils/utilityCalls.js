@@ -1,5 +1,7 @@
 angular.module("utils").service("utilityCalls", function()
 {
+    var self = this;
+
 	this.putImage = function(image, success, fail)
     {
         insertData(image, db,
@@ -65,6 +67,20 @@ angular.module("utils").service("utilityCalls", function()
 
     this.addTag = function(tag, success, fail)
     {
+        if(tag._rev){
+
+            console.log("Can't add Tag with a _rev value. Use changeTag().");
+
+            if(typeof fail === "function")
+            {
+                fail("Can't add Tag with a _rev value. Use changeTag().");
+            }
+
+            return;
+        }
+
+        tag.name = tag.name.toLowerCase();
+
         insertData(tag, tagDB,
             function (result)
             {
@@ -83,9 +99,91 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
-    this.getAllTags = function(success, fail)
+    this.editTag = function(tag, oldTagName, success, fail)
     {
-        tagDB.allDocs({include_docs:true})
+        // Check to see if the tag name (_id) has changed
+        getData(tag.name, tagDB,
+            function(response)
+            {
+                if(response.name !== tag.name)
+                {
+                    fail("There is an inconsistency between the tag name and key name.");
+                }
+                else
+                {
+                    // No changes to the name, lets just update the tag properties
+                    insertData(tag, tagDB,
+                        function (result)
+                        {
+                            if(typeof success === "function")
+                            {
+                                success(result);
+                            }
+                        },
+                        function (err)
+                        {
+                            if(typeof fail === "function")
+                            {
+                                fail(err);
+                            }
+                        }
+                    );
+                }
+            },
+            function(error)
+            {
+                if(error && error.status == 404)
+                {
+                    // Name not found, we are changing the name. This means we need to change where it appears in all images.
+
+                    // Grab all images where this tag occurs
+                    self.getImagesByTags([oldTagName],
+                        function(images)
+                        {
+                            // Right, time to cycle through all the images and make a change to the tag
+                            bulkUpdateData(images, function(image)
+                            {
+                                image.tags[image.tags.indexOf(oldTagName)] = tag.name;
+                            });
+
+                            // Lets post off this data now
+                            insertData(images, db,
+                                function()
+                                {
+                                    // Everything went ok, update the tag name now
+                                    insertData(tag, tagDB,
+                                        function (result)
+                                        {
+                                            if(typeof success === "function")
+                                            {
+                                                success(result);
+                                            }
+                                        },
+                                        function (err)
+                                        {
+                                            if(typeof fail === "function")
+                                            {
+                                                fail(err);
+                                            }
+                                        }
+                                    );
+                                },
+                                fail
+                            );
+                        },
+                        function(error)
+                        {
+                            console.log("Woops, we had an issue getting all images that match the tag.");
+                        }
+                    );
+                }
+            }
+        );
+    };
+
+    this.getAllTags = function(success, fail, wholeDoc)
+    {
+        tagDB.allDocs({include_docs:wholeDoc === true})
         .then(
             function(result)
             {
@@ -94,7 +192,13 @@ angular.module("utils").service("utilityCalls", function()
                     var tags = [];
                     angular.forEach(result.rows, function(row)
                     {
-                        tags.push(row.doc.name);
+                        if(wholeDoc)
+                        {
+                            tags.push(row.doc);
+                        }
+                        else {
+                            tags.push(row.key);
+                        }
                     });
 
                     success(tags);
@@ -111,11 +215,6 @@ angular.module("utils").service("utilityCalls", function()
             }
         );
     };
-
-    this.getMatchingTags = function(tags)
-    {
-
-    }
 
     // Save system configuration document
     this.saveConfig = function(config, success, fail)
@@ -136,7 +235,7 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    }
+    };
 
     // Return all the image tags in the database
     var imageTagsQuery = function(options, success, fail)
@@ -204,7 +303,7 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    }
+    };
 
     // Basic data fetch function
     var getData = function(keys, db, success, fail)
@@ -216,11 +315,11 @@ angular.module("utils").service("utilityCalls", function()
             .catch(fail);
         }
         else{
-            db.get(key)
+            db.get(keys)
             .then(success)
             .catch(fail);
         }
-    }
+    };
 
     // Basic data insert function
     var insertData = function(data, db, success, fail)
@@ -236,6 +335,51 @@ angular.module("utils").service("utilityCalls", function()
             db.put(data)
             .then(success)
             .catch(fail);
+        }
+    };
+
+    var deleteData = function(data, db, success, fail)
+    {
+        if(Array.isArray(data))
+        {
+            // Mark all docs for deletion
+            angular.forEach(data, function(doc){
+                doc._deleted = true;
+            });
+
+            db.bulkDocs(data)
+            .then(success)
+            .catch(fail);
+        }
+        else
+        {
+            db.remove(data)
+            .then(success)
+            .catch(fail);
+        }
+    };
+
+    // Bulk update data- accepts either an object to merge in or a function to process
+    var bulkUpdateData = function(docs, change)
+    {
+        if(Array.isArray(docs))
+        {
+            if(typeof change === "object")
+            {
+                angular.forEach(docs, function(doc)
+                {
+                    Object.assign(doc, change);
+                });
+            }
+            else if(typeof change === "function")
+            {
+                angular.forEach(docs, function(doc)
+                {
+                    doc = change(doc);
+                });
+            }
+
+            return docs;
         }
     };
 });

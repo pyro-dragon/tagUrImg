@@ -8,6 +8,6 @@
 </form>
 <div class="gallery-container">
     <div class="gallery-image" ng-repeat="image in displayImages">
-        <img src="{{image._id}}" ng-click="openImage(image._id)" />
+        <img src="{{image._id}}" ng-click="openImage(image._id)" uib-tooltip="{{image.tags.join(' ')}}" />
     </div>
 </div>
