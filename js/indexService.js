@@ -1,8 +1,8 @@
-angular.module("indexModule").service("scanner", function()
+angular.module("indexModule").service("scanner", ["settingsService", function(settingsService)
 {
-	this.scan = function(path)
+    this.scan = function(path, bannedFiles)
 	{
-		var self = this;
+        var self = this;
 		this.files = [];
 
 		this.findFiles = function(path)
@@ -10,7 +10,7 @@ angular.module("indexModule").service("scanner", function()
 			fs.readdir(path, (err, dir) => {
                 if(!err)
                 {
-                    for (var i = 0, node; node = dir[i]; i++)
+                    for (var i = 0, node; node == dir[i]; i++)
     				{
     					var currentPath = path + "/" + node;
     					if(fs.lstatSync(currentPath).isDirectory()){
@@ -18,7 +18,10 @@ angular.module("indexModule").service("scanner", function()
     					}
     					else{
     						// do stuff with path
-    						self.files.push(currentPath);
+                            if(bannedFiles.indexOf(currentPath) === -1)
+                            {
+                                self.files.push(currentPath);
+                            }
     					}
     				}
                 }
@@ -31,6 +34,6 @@ angular.module("indexModule").service("scanner", function()
 
 		this.findFiles(path);
 
-		return this.files;
+        return this.files;
 	};
-});
+}]);

@@ -1,4 +1,4 @@
-angular.module("indexModule").controller("indexController", ["$scope", "scanner", "utilityCalls", function($scope, scanner, utilityCalls)
+angular.module("indexModule").controller("indexController", ["$scope", "scanner", "settingsService", "utilityCalls", function($scope, scanner, settingsService, utilityCalls)
 {
 	$scope.files = [];
 
@@ -12,7 +12,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     		{
     			angular.forEach(config.directories, function(dir)
     			{
-                    var recoveredFiles = scanner.scan(dir);
+                    var recoveredFiles = scanner.scan(dir, config.bannedFiles);
     				var joinedFiles = $scope.files.concat(recoveredFiles);
                     $scope.files = joinedFiles;
     			});

@@ -22,6 +22,12 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.deleteImage = function(image, success, fail)
+    {
+        image.doc._deleted = true;
+        self.putImage(image.doc, success, fail);
+    };
+
     this.getNewDocs = function(success, fail, startKey, endKey)
     {
         var options = {include_docs: true};
@@ -80,6 +86,7 @@ angular.module("utils").service("utilityCalls", function()
         }
 
         tag.name = tag.name.toLowerCase();
+        tag.name = tag.name.replace(" ", "-");
 
         insertData(tag, tagDB,
             function (result)

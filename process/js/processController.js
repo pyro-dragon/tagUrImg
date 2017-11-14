@@ -1,4 +1,4 @@
-angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", function($scope, $uibModal, utilityCalls)
+angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", "settingsService", function($scope, $uibModal, utilityCalls, settingsService)
 {
     $scope.currentImages = [];
     $scope.selectedImages = {};
@@ -107,6 +107,12 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         }
 
         delete $scope.error;
+    };
+
+    $scope.deleteImage = function(image)
+    {
+        utilityCalls.deleteImage(image);
+        settingsService.banFile(image.id);
     };
 
     // Get the new items
