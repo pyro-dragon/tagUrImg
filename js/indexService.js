@@ -10,7 +10,7 @@ angular.module("indexModule").service("scanner", ["settingsService", function(se
 			fs.readdir(path, (err, dir) => {
                 if(!err)
                 {
-                    for (var i = 0, node; node == dir[i]; i++)
+                    for (var i = 0, node; node = dir[i]; i++)
     				{
     					var currentPath = path + "/" + node;
     					if(fs.lstatSync(currentPath).isDirectory()){

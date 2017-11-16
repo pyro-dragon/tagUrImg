@@ -58,7 +58,13 @@ angular.module("utils").service("utilityCalls", function()
             {
                 if(typeof success === "function")
                 {
-                    success(result.rows[0].value);
+                    if (result.rows[0])
+                    {
+                        success(result.rows[0].value);
+                    }
+                    else {
+                        success(0);
+                    }
                 }
             },
             function (err)

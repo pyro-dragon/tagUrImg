@@ -111,8 +111,13 @@ angular.module("processModule", []).controller("processController", ["$scope", "
 
     $scope.deleteImage = function(image)
     {
-        utilityCalls.deleteImage(image);
-        settingsService.banFile(image.id);
+        utilityCalls.deleteImage(
+            image,
+            settingsService.banFile(
+                image.id,
+                $scope.currentImages.splice($scope.currentImages.indexOf(image), 1)
+            )
+        );
     };
 
     // Get the new items
