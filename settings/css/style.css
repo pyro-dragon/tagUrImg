@@ -5,3 +5,7 @@
 .form-footer {
     min-height: 32px;
 }
+
+.banned-file{
+    height: 150px;
+}

@@ -64,6 +64,21 @@ angular.module("settingsModule").controller("settingsController", ["$scope", "se
         $scope.modified = true;
     };
 
+    $scope.unbanFiles = function()
+    {
+        if($scope.selectedBannedFiles)
+        {
+            angular.forEach($scope.selectedBannedFiles, function(file)
+            {
+                $scope.config.bannedFiles.splice($scope.config.bannedFiles.indexOf(file), 1)
+            });
+
+            $scope.modified = true;
+
+            delete $scope.selectedBannedFiles;
+        }
+    };
+
 	function init()
 	{
     	$scope.config = {
