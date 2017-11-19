@@ -113,10 +113,16 @@ angular.module("processModule", []).controller("processController", ["$scope", "
     {
         utilityCalls.deleteImage(
             image,
-            settingsService.banFile(
-                image.id,
-                $scope.currentImages.splice($scope.currentImages.indexOf(image), 1)
-            )
+            function()
+            {
+                settingsService.banFile(
+                    image.id,
+                    function()
+                    {
+                        $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
+                    }
+                );
+            }
         );
     };
 

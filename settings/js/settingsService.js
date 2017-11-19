@@ -68,7 +68,17 @@ angular.module("settingsModule").service("settingsService", ["utilityCalls", fun
 
     this.saveConfig = function(success, fail)
     {
-        utilityCalls.saveConfig(settings, success, fail);
+        utilityCalls.saveConfig(settings,
+            function(response)
+            {
+                settings._rev = response.rev;
+
+                if(typeof success === "function")
+                {
+                    success();
+                }
+            },
+            fail);
     };
 
     this.banFile = function(path, success, fail)
