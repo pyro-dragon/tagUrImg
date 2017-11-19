@@ -44,6 +44,21 @@
     </div>
 </form>
 
+<form class="form">
+    <h3>Banned files</h3>
+    <div class="form-group">
+        <label for="bannedFiles">Banned files</label>
+        <select id-"bannedFiles"
+                class="form-control banned-file"
+                name="bannedFiles"
+                multiple
+                ng-model="selectedBannedFiles"
+                ng-options="file for file in config.bannedFiles">
+        </select>
+    </div>
+    <button role="button" class="btn btn-success" ng-disabled="!selectedBannedFiles" ng-click="unbanFiles()">Unban Selected</button>
+</form>
+
 <hr />
 
 <div ng-if="status==='error'" class="alert alert-danger">

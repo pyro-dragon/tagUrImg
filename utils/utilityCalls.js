@@ -22,9 +22,15 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.deleteImage = function(image, success, fail)
+    {
+        image.doc._deleted = true;
+        self.putImage(image.doc, success, fail);
+    };
+
     this.getNewDocs = function(success, fail, startKey, endKey)
     {
-        var options = {include_docs: true};
+        var options = {};
         startKey ? options.startkey = startKey : options.limit = 20;
         endKey ? options.endkey = endKey : null;
         newDocsQuery(false, options,
@@ -52,7 +58,13 @@ angular.module("utils").service("utilityCalls", function()
             {
                 if(typeof success === "function")
                 {
-                    success(result.rows[0].value);
+                    if (result.rows[0])
+                    {
+                        success(result.rows[0].value);
+                    }
+                    else {
+                        success(0);
+                    }
                 }
             },
             function (err)
@@ -80,6 +92,7 @@ angular.module("utils").service("utilityCalls", function()
         }
 
         tag.name = tag.name.toLowerCase();
+        tag.name = tag.name.replace(" ", "-");
 
         insertData(tag, tagDB,
             function (result)
@@ -220,11 +233,11 @@ angular.module("utils").service("utilityCalls", function()
     this.saveConfig = function(config, success, fail)
     {
         insertData(config, db,
-            function()
+            function(response)
             {
                 if(typeof success === 'function')
                 {
-                    success();
+                    success(response);
                 }
             },
             function(error)
@@ -249,6 +262,7 @@ angular.module("utils").service("utilityCalls", function()
     var newDocsQuery = function(reduce, options, success, fail)
     {
         options.reduce = reduce? true:false;
+        options.include_docs = reduce? false:true;
         db.query("main/getNew", options)
         .then(success)
         .catch(fail);

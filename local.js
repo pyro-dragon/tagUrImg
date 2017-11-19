@@ -24,13 +24,13 @@ db.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                //_rev: "5-2d75f6fa21124bee8a236fb67b1d9a29",
+                //_rev: "2-e66450fd50c042c3b2cfab9587c84863",
                 views: {
                     getNew: {
                         map: function(doc){
-                            if(doc.new === undefined || doc.new === true)
+                            if(doc.new === true)
                             {
-                                emit();
+                                emit(doc._id);
                             }
                         }.toString(),
                         reduce: '_count'

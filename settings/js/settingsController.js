@@ -1,4 +1,4 @@
-angular.module("settingsModule").controller("settingsController", ["$scope", "utilityCalls", function($scope, utilityCalls)
+angular.module("settingsModule").controller("settingsController", ["$scope", "settingsService", function($scope, settingsService)
 {
 	$scope.addDir = function()
 	{
@@ -37,13 +37,12 @@ angular.module("settingsModule").controller("settingsController", ["$scope", "ut
         }
 
         $scope.formChanged();
-    }
+    };
 
     $scope.save = function()
     {
         $scope.status = "submitted";
-        utilityCalls.saveConfig($scope.config,
-            function()
+        settingsService.saveConfig(function()
             {
                 $scope.status = "success";
             },
@@ -53,17 +52,32 @@ angular.module("settingsModule").controller("settingsController", ["$scope", "ut
                 $scope.error = error;
             }
         );
-    }
+    };
 
     $scope.revert = function()
     {
         init();
-    }
+    };
 
     $scope.formChanged = function()
     {
         $scope.modified = true;
-    }
+    };
+
+    $scope.unbanFiles = function()
+    {
+        if($scope.selectedBannedFiles)
+        {
+            angular.forEach($scope.selectedBannedFiles, function(file)
+            {
+                $scope.config.bannedFiles.splice($scope.config.bannedFiles.indexOf(file), 1)
+            });
+
+            $scope.modified = true;
+
+            delete $scope.selectedBannedFiles;
+        }
+    };
 
 	function init()
 	{
@@ -75,16 +89,16 @@ angular.module("settingsModule").controller("settingsController", ["$scope", "ut
         $scope.modified = false;
         delete $scope.error;
 
-		utilityCalls.getConfig(function(config)
-		{
-            // Get the settings remotely
-			$scope.config = config;
+        settingsService.getConfig(function(config)
+            {
+                $scope.config = config;
 
-            // Set the directories list to having an empty string if there is nothing there
-            if($scope.config.directories && $scope.config.directories.length < 1){
-                $scope.config.directories = [""];
+                // Set the directories list to having an empty string if there is nothing there
+                if($scope.config.directories && $scope.config.directories.length < 1){
+                    $scope.config.directories = [""];
+                }
             }
-		});
+        );
 	}
 
 	init();

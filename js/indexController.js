@@ -1,4 +1,4 @@
-angular.module("indexModule").controller("indexController", ["$scope", "scanner", "utilityCalls", function($scope, scanner, utilityCalls)
+angular.module("indexModule").controller("indexController", ["$scope", "scanner", "settingsService", "utilityCalls", function($scope, scanner, settingsService, utilityCalls)
 {
 	$scope.files = [];
 
@@ -12,7 +12,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     		{
     			angular.forEach(config.directories, function(dir)
     			{
-                    var recoveredFiles = scanner.scan(dir);
+                    var recoveredFiles = scanner.scan(dir, config.bannedFiles);
     				var joinedFiles = $scope.files.concat(recoveredFiles);
                     $scope.files = joinedFiles;
     			});
@@ -23,8 +23,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
         	{
         		db.get(file, function (error, response) {
                     if(error && error.status == 404){
-                        db.put({_id: file, tags: [], dateAdded: Date.now(), new: true});
-            			console.log("Document created");
+                        utilityCalls.putImage({_id: file, tags: [], dateAdded: Date.now(), new: true}, function(){console.log("Document created")}, function(error){console.log("Document Error: " + error)});
                     }
         		});
         	});

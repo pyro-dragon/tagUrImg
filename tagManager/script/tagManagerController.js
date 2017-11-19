@@ -22,7 +22,7 @@ angular.module("tagManagerModule", []).controller("tagManagerController", ["$sco
                         console.log("Error occured adding tag: " + error);
                     }
                 }
-            )
+            );
         });
 
         $uibModalInstance.close($scope.data.selectedTags);

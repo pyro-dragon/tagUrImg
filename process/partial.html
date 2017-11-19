@@ -1,6 +1,7 @@
 <h2>Process</h2>
 <button class="btn btn-primary" ng-click="openTagManager(selectedImages)" ng-disabled="!selectedCount">Add tags</button>
 <button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
+
 <p>
     Selected Items: {{selectedCount}}
 </p>
@@ -12,17 +13,19 @@
 </div>
 <div class="image-container">
     <div ng-repeat="image in currentImages" class="image">
-        <img ng-class="{'selected':selectedImages[image.id]}" ng-src="{{image.id}}" ng-click="selectImage(image)" />
-        <button class="delete btn btn-danger">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-        </button>
-        <div>
-            <p>
-                Date added: {{image.doc.dateAdded | date:'MM-dd-yyyy'}}
-            </p>
-            <p ng-if="image.doc.tags.length > 0">
-                Tags: <span ng-repeat="tag in image.doc.tags">{{tag}} </span>
-            </p>
+        <div class="image-active-zone">
+            <img ng-class="{'selected':selectedImages[image.id]}" ng-src="{{image.id}}" ng-click="selectImage(image)" />
+            <div class="button-container">
+                <button class="btn btn-danger" ng-click="deleteImage(image)">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-primary" ng-click="openTagManager([image])">
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
+        <p>
+            {{image.doc.tags.join(' ')}}
+        </p>
     </div>
 </div>
