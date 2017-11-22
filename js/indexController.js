@@ -12,7 +12,7 @@ angular.module("indexModule").controller("indexController", ["$scope", "scanner"
     		{
     			angular.forEach(config.directories, function(dir)
     			{
-                    var recoveredFiles = scanner.scan(dir, config.bannedFiles);
+                    var recoveredFiles = scanner.scan(dir, config);
     				var joinedFiles = $scope.files.concat(recoveredFiles);
                     $scope.files = joinedFiles;
     			});

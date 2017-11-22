@@ -1,9 +1,10 @@
 angular.module("indexModule").service("scanner", ["settingsService", function(settingsService)
 {
-    this.scan = function(path, bannedFiles)
+    this.scan = function(path, config)
 	{
         var self = this;
 		this.files = [];
+        var fileExtensionExtractor = /(?:\.([^.]+))?$/;
 
 		this.findFiles = function(path)
 		{
@@ -18,7 +19,7 @@ angular.module("indexModule").service("scanner", ["settingsService", function(se
     					}
     					else{
     						// do stuff with path
-                            if(bannedFiles.indexOf(currentPath) === -1)
+                            if(config.bannedFiles.indexOf(currentPath) === -1 && config.allowedFileTypes.indexOf(fileExtensionExtractor.exec(currentPath)[1]) > -1)
                             {
                                 self.files.push(currentPath);
                             }

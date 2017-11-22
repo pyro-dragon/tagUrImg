@@ -56,6 +56,18 @@
                 ng-options="file for file in config.bannedFiles">
         </select>
     </div>
+    <div class="form-group">
+        <label for="addBannedPath" class="sr-only">Add Banned Path</label>
+        <div class="input-group">
+            <input class="form-control" id="addBannedPath" type="text" ng-model="newBannedPath" placeholder="Add banned path" />
+            <span class="input-group-btn">
+                <button class="btn btn-success" ng-click="addBannedPath()" type="button" ng-disabled="!newBannedPath"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </span>
+        </div>
+    </div>
+    <p>
+        newBannedPath: {{newBannedPath}}
+    </p>
     <button role="button" class="btn btn-success" ng-disabled="!selectedBannedFiles" ng-click="unbanFiles()">Unban Selected</button>
 </form>
 

@@ -79,6 +79,18 @@ angular.module("settingsModule").controller("settingsController", ["$scope", "se
         }
     };
 
+    $scope.addBannedPath = function()
+    {
+        if($scope.newBannedPath && $scope.newBannedPath !=="")
+        {
+            $scope.config.bannedFiles.push($scope.newBannedPath);
+
+            $scope.modified = true;
+
+            delete $scope.newBannedPath;
+        }
+    };
+
 	function init()
 	{
     	$scope.config = {
