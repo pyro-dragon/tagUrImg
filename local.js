@@ -11,7 +11,7 @@ var tagDB = new PouchDB('tagDB');
 // As a WebSQL DB
 //var db = new PouchDB('mydb', {adapter: 'websql'});
 db.get('_design/main').then(function (doc) {
-  console.log("main db dd rev:" + doc._rev);
+    console.log("main db dd rev:" + doc._rev);
 });
 
 var override = false;
@@ -73,42 +73,25 @@ db.createIndex(
             }
         ],
         name: "tag_index"
-    });
-// ).then(function(){
-//     db.find(
-//         {
-//             selector: {"tags": { "$all": ["magic user", "female"]}}
-//             //ddoc: "my-index-design-doc"
-//         }
-//     )
-//     .then(
-//         function(result)
-//         {
-//             console.log("Results success: " );
-//             console.log(result);
-//         }
-//     )
-//     .catch(
-//         function(error)
-//         {
-//             console.log("Results fail: " + error);
-//         }
-//     );
-// });
+    }
+);
 
 PouchDB.debug.enable('pouchdb:find');
 
-// Init the program options
+// Init the program options 
 db.get("config", function (error, response) {
-    if(error && error.status === 404)
+    //var overrideConfig = true;
+    if(overrideConfig || (error && error.status === 404))
     {
         var ddoc = {
             _id: 'config',
-            //_rev: "",
+            //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
             directories: [],
+            bannedFiles: [],
 			firstTime: true,
 			showHints: true,
-			itemsPerPage: 40
+			itemsPerPage: 40,
+            allowedFileTypes: ["jpeg", "jpg", "webp", "png", "apng", "tiff", "pdf", "bmp", "ico"]
         };
 
         db.put(ddoc).then(function(){
@@ -121,6 +104,12 @@ db.get("config", function (error, response) {
     {
         console.log("Config document exists.");
     }
+});
+
+// Get the rev of the settings
+db.get('config').then(function (doc) {
+    console.log("config rev:" + doc._rev);
+    console.log(doc);
 });
 
 // Don't need a design doc for tagDB yet
