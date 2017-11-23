@@ -44,31 +44,35 @@
     </div>
 </form>
 
-<form class="form">
+<form class="form  container-fluid">
     <h3>Banned files</h3>
-    <div class="form-group">
-        <label for="bannedFiles">Banned files</label>
-        <select id-"bannedFiles"
-                class="form-control banned-file"
-                name="bannedFiles"
-                multiple
-                ng-model="selectedBannedFiles"
-                ng-options="file for file in config.bannedFiles">
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="addBannedPath" class="sr-only">Add Banned Path</label>
-        <div class="input-group">
-            <input class="form-control" id="addBannedPath" type="text" ng-model="newBannedPath" placeholder="Add banned path" />
-            <span class="input-group-btn">
-                <button class="btn btn-success" ng-click="addBannedPath()" type="button" ng-disabled="!newBannedPath"><i class="fa fa-plus" aria-hidden="true"></i></button>
-            </span>
+    <div class="form-group row">
+        <div class="col-md-2">
+            <label for="bannedFiles">Banned files</label>
+            <br />
+            <button role="button" class="btn btn-success" ng-disabled="!selectedBannedFiles" ng-click="unbanFiles()">Unban Selected</button>
+        </div>
+        <div class="col-md-10">
+            <select id-"bannedFiles"
+                    class="form-control banned-file"
+                    name="bannedFiles"
+                    multiple
+                    ng-model="selectedBannedFiles"
+                    ng-options="file for file in config.bannedFiles">
+            </select>
         </div>
     </div>
-    <p>
-        newBannedPath: {{newBannedPath}}
-    </p>
-    <button role="button" class="btn btn-success" ng-disabled="!selectedBannedFiles" ng-click="unbanFiles()">Unban Selected</button>
+    <div class="form-group row">
+        <label for="addBannedPath" class="sr-only">Add Banned Path</label>
+        <div class="col-md-12">
+            <div class="input-group">
+                <input class="form-control" id="addBannedPath" type="text" ng-model="newBannedPath" placeholder="Add banned path" />
+                <span class="input-group-btn">
+                    <button class="btn btn-success" ng-click="addBannedPath()" type="button" ng-disabled="!newBannedPath"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                </span>
+            </div>
+        </div>
+    </div>
 </form>
 
 <hr />
