@@ -17,3 +17,6 @@ As a developer I want
     to arrange tags hierachically (eg, skirt -> clothes).
     filter out certain directories and file types from being scanned.
     to bundle all dependencies into one installer package for easy distribution.
+
+Directive for galleries. Takes any items to display. Contains selection tools, they can be disabled.
+Directive for images. Handles clicks to open in external applications.

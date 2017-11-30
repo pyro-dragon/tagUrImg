@@ -23,5 +23,6 @@
     "jquery": "^3.2.1",
     "pouchdb-browser": "^6.3.4",
     "pouchdb-find": "^6.3.4"
-  }
+  },
+  "dependencies": {}
 }

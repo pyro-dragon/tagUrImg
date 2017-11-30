@@ -19,7 +19,7 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
                 }
             );
         }
-    };
+    }
 
 
     $scope.search = function()
@@ -30,10 +30,10 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
 
             search(termsArray);
         }
-    }
+    };
 
     $scope.openImage = function(path)
     {
         shell.openItem(path);
-    }
+    };
 }]);

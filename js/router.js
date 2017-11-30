@@ -26,9 +26,13 @@ angular.module("indexModule").config(function($routeProvider)
         controller: "tagBrowserController",
         css: "tagBrowser/css/style.css"
     })
-	.when("/article/:articleLink", {
-		templateUrl: "process/partial.html",
-		controller: "articleController",
-        css: "article/css/style.css"
+    .when("/collections", {
+        templateUrl: "collections/partial.html",
+        controller: "CollectionsController",
+        css: "collections/css/style.css"
+    })
+	.when("/image/:imageLink", {
+		templateUrl: "image/partial.html",
+		controller: "imageController"
 	});
 });

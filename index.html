@@ -43,6 +43,10 @@
         <script src="tagBrowser/js/tagBrowserModule.js"></script>
         <script src="tagBrowser/js/tagBrowserController.js"></script>
 
+        <script src="collections/js/collectionsModule"></script>
+        <script src="collections/js/collectionsController.js"></script>
+        <script src="collections/js/collectionsService.js"></script>
+
 		<script src="local.js"></script>
         <script src="js/indexModule.js"></script>
         <script src="js/indexService.js"></script>
@@ -71,6 +75,9 @@
 					<ul class="nav navbar-nav">
 						<li ng-class="getLocation('/browse')? 'active' : ''">
 							<a href="#/browse">Browse</a>
+						</li>
+						<li ng-class="getLocation('/collections')? 'active' : ''">
+							<a href="#/collections">Collections</a>
 						</li>
                         <li ng-class="getLocation('/tagBrowser')? 'active' : ''">
                             <a href="#/tagBrowser">Tag Management</a>

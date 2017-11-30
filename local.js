@@ -7,6 +7,7 @@ PouchDB.plugin(require('pouchdb-find'));
 // As an indexed DB
 var db = new PouchDB('mydb');
 var tagDB = new PouchDB('tagDB');
+var collectionDb = new PouchDB('collectionDb');
 
 // As a WebSQL DB
 //var db = new PouchDB('mydb', {adapter: 'websql'});
@@ -15,6 +16,8 @@ db.get('_design/main').then(function (doc) {
 });
 
 var override = false;
+var overrideConfig = false;
+var overrideCollection = false;
 var destroy = false;
 
 // Init the database
@@ -78,12 +81,12 @@ db.createIndex(
 
 PouchDB.debug.enable('pouchdb:find');
 
-// Init the program options 
+// Init the program options
 db.get("config", function (error, response) {
     //var overrideConfig = true;
     if(overrideConfig || (error && error.status === 404))
     {
-        var ddoc = {
+        var doc = {
             _id: 'config',
             //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
             directories: [],
@@ -94,7 +97,7 @@ db.get("config", function (error, response) {
             allowedFileTypes: ["jpeg", "jpg", "webp", "png", "apng", "tiff", "pdf", "bmp", "ico"]
         };
 
-        db.put(ddoc).then(function(){
+        db.put(doc).then(function(){
             console.log("Created the config doc");
         }).catch(function(error){
             console.log("An error occured creating the config doc: " + error);
@@ -110,6 +113,30 @@ db.get("config", function (error, response) {
 db.get('config').then(function (doc) {
     console.log("config rev:" + doc._rev);
     console.log(doc);
+});
+
+// Init the root collection
+collectionDb.get("root", function (error, response) {
+    //var overrideConfig = true;
+    if(overrideCollection || (error && error.status === 404))
+    {
+        var doc = {
+            _id: 'root',
+            //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
+            name:"",
+            items:[]
+        };
+
+        collectionDb.put(doc).then(function(){
+            console.log("Created the root collection doc");
+        }).catch(function(error){
+            console.log("An error occured creating the root collection doc: " + error);
+        });
+    }
+    else
+    {
+        console.log("Root document exists.");
+    }
 });
 
 // Don't need a design doc for tagDB yet

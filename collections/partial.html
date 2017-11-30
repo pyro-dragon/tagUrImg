@@ -1,0 +1,28 @@
+<h2>Collections</h2>
+
+<form>
+    <div class="input-group">
+        <input class="form-control" type="text" ng-model="newCollectionName" placeholder="New collection name" />
+        <span class="input-group-btn">
+            <button class="btn btn-success" ng-click="newCollection()" type="button" ng-disabled="currentCollection == {}"><i class="fa fa-plus" aria-hidden="true"></i></button>
+        </span>
+    </div>
+</form>
+
+<h3><span ng-repeat="collection in getCollectionPath() track by $index">/{{collection.name}}</span></h3>
+
+<p>
+    currentCollection: {{getCurrentCollection()}}
+</p>
+
+<div class="collection-container">
+    <div class="collection-item" ng-repeat="item in getCurrentCollection().items track by $index">
+        <img ng-if="item.type=='image'" src="{{item._id}}" ng-click="openImage(item._id)" />
+        <div ng-if="item.type!=='image'" class="folder" ng-click="openCollection(item._id||item.id)">
+            <img src="./images/folder-black.png" />
+            <p class="collection-name">
+                {{item.name}}
+            </p>
+        </div>
+    </div>
+</div>

@@ -319,6 +319,46 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.getCollection = function(collectionID, success, fail)
+    {
+        getData(collectionID, collectionDb,
+            function(response)
+            {
+                if(typeof success === 'function')
+                {
+                    success(response);
+                }
+            },
+            function(error)
+            {
+                if(typeof fail === 'function')
+                {
+                    fail(error);
+                }
+            }
+        );
+    };
+
+    this.putCollection = function(collection, success, fail)
+    {
+        insertData(collection, collectionDb,
+            function(response)
+            {
+                if(typeof success === 'function')
+                {
+                    success(response);
+                }
+            },
+            function(error)
+            {
+                if(typeof fail === 'function')
+                {
+                    fail(error);
+                }
+            }
+        );
+    };
+
     // Basic data fetch function
     var getData = function(keys, db, success, fail)
     {
@@ -346,9 +386,18 @@ angular.module("utils").service("utilityCalls", function()
         }
         else
         {
-            db.put(data)
-            .then(success)
-            .catch(fail);
+            if(data._id)
+            {
+                db.put(data)
+                .then(success)
+                .catch(fail);
+            }
+            else
+            {
+                db.post(data)
+                .then(success)
+                .catch(fail);
+            }
         }
     };
 
