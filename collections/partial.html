@@ -9,13 +9,23 @@
     </div>
 </form>
 
-<h3><span ng-repeat="collection in getCollectionPath() track by $index">/{{collection.name}}</span></h3>
+<h3>
+    <span ng-repeat="collection in getCollectionPath() track by $index">/<span ng-click="openCollection(collection._id||collection._id)" class="clickable">{{collection.name}}</span></span>
+</h3>
 
 <p>
-    currentCollection: {{getCurrentCollection()}}
+    currentCollection: {{currentCollection}}
 </p>
 
 <div class="collection-container">
+    <div ng-if="currentCollection.parent" class="collection-item">
+        <div ng-if="item.type!=='image'" class="folder" ng-click="openCollection(currentCollection.parent)">
+            <img src="./images/folder-black.png" />
+            <p class="collection-name">
+                ..
+            </p>
+        </div>
+    </div>
     <div class="collection-item" ng-repeat="item in getCurrentCollection().items track by $index">
         <img ng-if="item.type=='image'" src="{{item._id}}" ng-click="openImage(item._id)" />
         <div ng-if="item.type!=='image'" class="folder" ng-click="openCollection(item._id||item.id)">

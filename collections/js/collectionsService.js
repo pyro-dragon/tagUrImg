@@ -1,9 +1,7 @@
 angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls", function(utilityCalls)
 {
     var self = this;
-
     var currentCollection = {};
-
     var collectionPath = [];
 
     this.getCurrentCollection = function()
@@ -11,7 +9,7 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
         return currentCollection;
     };
 
-    this.getCollectionPath= function()
+    this.getCollectionPath = function()
     {
         return collectionPath;
     };
@@ -24,13 +22,23 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
                 {
                     currentCollection = collection;
 
-                    // Check to see if the collection exists in the current path
-                    if(collectionPath.indexOf(collection) > 0){
-                        collectionPath = collectionPath.splice(collectionPath.indexOf(collection), 1);
+                    if(collection._id === "root")
+                    {
+                        collectionPath = [collection];
                     }
-                    else{
-                        collectionPath.push(collection);
+                    else
+                    {
+                        // Check to see if the collection exists in the current path
+                        for(var i = 0; i < collectionPath.length; i++){
+                            if(collection.parent === collectionPath[i]._id || collectionPath[i].id){
+                                collectionPath = collectionPath.slice(0, i + 1);
+                                break;
+                            }
+                        }
                     }
+
+                    // It isn't so lets just add it
+                    collectionPath.push(collection);
 
                     if(typeof success === "function")
                     {
@@ -47,6 +55,7 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
                     utilityCalls.getCollection(collectionId, function(collection)
                         {
                             currentCollection = collection;
+                            collectionPath = [collection];
 
                             if(typeof success === "function")
                             {
@@ -102,12 +111,25 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
         }, fail);
     };
 
+    this.deleteCollection = function(collectionId, deleteChilderen)
+    {
+        if(deleteChilderen)
+        {
+            deleteCollectionAndChildren();
+        }
+        else
+        {
+            deleteCollectionOnly();
+        }
+    };
+
     function getRootCollection(success, fail)
     {
         utilityCalls.getCollection("root",
             function(collection)
             {
                 currentCollection = collection;
+                collectionPath = [collection];
 
                 if(typeof success === "function")
                 {
