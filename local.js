@@ -14,6 +14,12 @@ var collectionDb = new PouchDB('collectionDb');
 db.get('_design/main').then(function (doc) {
     console.log("main db dd rev:" + doc._rev);
 });
+tagDB.get('_design/main').then(function (doc) {
+    console.log("tagDB dd rev:" + doc._rev);
+});
+collectionDb.get('_design/main').then(function (doc) {
+    console.log("collectionDb dd rev:" + doc._rev);
+});
 
 var override = false;
 var overrideConfig = false;
@@ -27,7 +33,7 @@ db.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                //_rev: "2-e66450fd50c042c3b2cfab9587c84863",
+                //_rev: "3-ea82b1e24445448b952d023950456c40",
                 views: {
                     getNew: {
                         map: function(doc){
@@ -123,7 +129,7 @@ collectionDb.get("root", function (error, response) {
         var doc = {
             _id: 'root',
             //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
-            name:"",
+            name:"/",
             items:[]
         };
 
@@ -136,6 +142,39 @@ collectionDb.get("root", function (error, response) {
     else
     {
         console.log("Root document exists.");
+    }
+});
+
+collectionDb.get("_design/main", function (error, response) {
+    if(error || overrideCollection)
+    {
+        if(overrideCollection || error.status === 404)
+        {
+            var ddoc = {
+                _id: '_design/main',
+                //_rev: "1-b264561af71b46dfb16e11ca038cafef",
+                views: {
+                    getParent: {
+                        map: function(doc){
+                            emit(doc.parent);
+                        }.toString(),
+                        reduce: '_count'
+                    }
+                }
+            };
+
+            collectionDb.put(ddoc).then(function(){
+                console.log("Created the collection main design doc");
+            }).catch(function(error){
+                console.log("An error occured creating the collection design doc: " + error);
+            });
+        }
+        else {
+            console.log("An error occured getting the main design doc: " + error);
+        }
+    }
+    else {
+        console.log("Main design document exists.");
     }
 });
 

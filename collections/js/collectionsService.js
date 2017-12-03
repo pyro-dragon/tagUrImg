@@ -83,6 +83,7 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
     this.newCollection = function(name, success, fail)
     {
         utilityCalls.putCollection({
+            type: "collection",
             name: name,
             parent: currentCollection._id
         },
@@ -115,13 +116,75 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
     {
         if(deleteChilderen)
         {
-            deleteCollectionAndChildren();
+            deleteCollectionAndChildren(collectionId);
         }
         else
         {
-            deleteCollectionOnly();
+            deleteCollectionOnly(collectionId);
         }
     };
+
+    function deleteCollectionOnly(collectionId)
+    {
+        // Grab the child items
+        utilityCalls.getChildCollectionsOf(collectionId, function(collections)
+        {
+            // We have the child items
+
+            // Cycle through all the child items
+            var children = [];
+            angular.forEach(collections.rows, function(collection)
+            {
+                // Set the parents of all the children to the currently selected collection
+                collection.doc.parent = currentCollection.id || currentCollection._id;
+
+                // Add the child to our list to upload
+                children.push(collection.doc);
+
+                // Add the item to the current collections children
+                currentCollection.items.push({
+                    type: collection.doc.type,
+                    name: collection.doc.name,
+                    _id: collection._id|| collection.id
+                });
+            });
+
+            // Save the changes
+            utilityCalls.putCollection(children, function(){
+
+                // If we successfully saved, delete the requested collection
+                utilityCalls.deleteCollection(collectionId, function(collection){
+                    // Remove the collection from the current collection
+                    for(var i = 0; i < currentCollection.items.length; i++){
+                        if((currentCollection.items[i]._id||currentCollection.items[i].id) === collectionId){
+                            currentCollection.items.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    utilityCalls.putCollection(currentCollection, function(){
+                        console.log("Finished all delete functions");
+                    });
+                }, function(collection){    // TODO: Temp to remove broken links
+                    // Remove the collection from the current collection
+                    for(var i = 0; i < currentCollection.items.length; i++){
+                        if((currentCollection.items[i]._id||currentCollection.items[i].id) === collectionId){
+                            currentCollection.items.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    utilityCalls.putCollection(currentCollection, function(){
+                        console.log("Finished all delete functions");
+                    });
+                });
+            });
+        },
+        function(error)
+        {
+            console.log(error);
+        });
+    }
 
     function getRootCollection(success, fail)
     {

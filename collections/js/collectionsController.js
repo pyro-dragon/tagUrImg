@@ -5,16 +5,7 @@ angular.module("CollectionsModule").controller("CollectionsController", ["$scope
 
     function init()
     {
-        // CollectionsService.getCollection("root",
-        //     function(collection)
-        //     {
-        //         $scope.currentCollection = collection;
-        //     },
-        //     function(error)
-        //     {
-        //         $scope.error = error;
-        //     }
-        // );
+        
     }
 
     $scope.getCurrentCollection = CollectionsService.getCurrentCollection;
@@ -61,6 +52,10 @@ angular.module("CollectionsModule").controller("CollectionsController", ["$scope
     $scope.openImage = function(path)
     {
         shell.openItem(path);
+    };
+
+    $scope.delete = function(collectionId){
+        CollectionsService.deleteCollection(collectionId, false);
     };
 
     init();

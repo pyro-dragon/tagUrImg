@@ -2,6 +2,9 @@ angular.module("utils").service("utilityCalls", function()
 {
     var self = this;
 
+    //-------------------------------------------------------------------------
+    // Image functions
+    //-------------------------------------------------------------------------
 	this.putImage = function(image, success, fail)
     {
         insertData(image, db,
@@ -51,6 +54,9 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    //-------------------------------------------------------------------------
+    // New Document functions
+    //-------------------------------------------------------------------------
     this.getNewDocCount = function(success, fail)
     {
         newDocsQuery(true, {},
@@ -77,6 +83,9 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    //-------------------------------------------------------------------------
+    // Tag functions
+    //-------------------------------------------------------------------------
     this.addTag = function(tag, success, fail)
     {
         if(tag._rev){
@@ -229,6 +238,10 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    //-------------------------------------------------------------------------
+    // Config functions
+    //-------------------------------------------------------------------------
+
     // Save system configuration document
     this.saveConfig = function(config, success, fail)
     {
@@ -248,24 +261,6 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
-    };
-
-    // Return all the image tags in the database
-    var imageTagsQuery = function(options, success, fail)
-    {
-        db.query("main/getTags", options)
-        .then(success)
-        .catch(fail);
-    };
-
-    // Return all docs labeled as new
-    var newDocsQuery = function(reduce, options, success, fail)
-    {
-        options.reduce = reduce? true:false;
-        options.include_docs = reduce? false:true;
-        db.query("main/getNew", options)
-        .then(success)
-        .catch(fail);
     };
 
 	// Get the database config
@@ -319,6 +314,9 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    //-------------------------------------------------------------------------
+    // Collection functions
+    //-------------------------------------------------------------------------
     this.getCollection = function(collectionID, success, fail)
     {
         getData(collectionID, collectionDb,
@@ -359,7 +357,67 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.getChildCollectionsOf = function(id, success, fail)
+    {
+        getCollectionChildrenQuery(id, success, fail);
+    };
+
+    this.deleteCollection = function(id, success, fail)
+    {
+        deleteData(id, collectionDb,
+        function(response){
+            console.log("successfully deleted: " + response);
+
+            if(typeof success === "function"){
+                success(response);
+            }
+        },
+        function(error){
+            console.log("Error deleting collections: " + error);
+
+            if(typeof fail === "function"){
+                fail(error);
+            }
+        });
+    };
+
+    //-------------------------------------------------------------------------
+    // Query functions
+    //-------------------------------------------------------------------------
+
+    // Return all the image tags in the database
+    var imageTagsQuery = function(options, success, fail)
+    {
+        db.query("main/getTags", options)
+        .then(success)
+        .catch(fail);
+    };
+
+    // Return all docs labeled as new
+    var newDocsQuery = function(reduce, options, success, fail)
+    {
+        options.reduce = reduce? true:false;
+        options.include_docs = reduce? false:true;
+        db.query("main/getNew", options)
+        .then(success)
+        .catch(fail);
+    };
+
+    // Return all collections with the supplied parent ID
+    var getCollectionChildrenQuery = function(id, success, fail)
+    {
+        collectionDb.query("main/getParent", {
+            reduce: false,
+            key: id,
+            include_docs:true
+        })
+        .then(success)
+        .catch(fail);
+    };
+
+    //-------------------------------------------------------------------------
     // Basic data fetch function
+    //-------------------------------------------------------------------------
     var getData = function(keys, db, success, fail)
     {
         if(Array.isArray(keys))
