@@ -35,7 +35,10 @@
             </p>
         </div>
         <p class="clickable" ng-click="delete(item._id||item.id)">
-            delete
+            delete collection
+        </p>
+        <p class="clickable" ng-click="delete(item._id||item.id, true)">
+            delete collection and children
         </p>
     </div>
 </div>

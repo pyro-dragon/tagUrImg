@@ -112,6 +112,7 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
         }, fail);
     };
 
+    // The exposed delete function
     this.deleteCollection = function(collectionId, deleteChilderen)
     {
         if(deleteChilderen)
@@ -124,6 +125,39 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
         }
     };
 
+    // Delete the chosen collection and child items
+    function deleteCollectionAndChildren(collectionId)
+    {
+        function iterativeDelete(collectioId){
+            utilityCalls.getChildCollectionsOf(collectionId, function(collections)
+            {
+                angular.forEach(collections.rows, function(collection){
+
+                    // Check if there are any child items and get them
+                    if(collection.doc.type === "collection" && collection.doc.items.length > 0){
+                        iterativeDelete(collection._id);
+                    }
+                });
+
+                colsole.log("deleting " + collectionId);
+                utilityCalls.deleteCollection(collectionId);
+            });
+        }
+
+        // Delete the item from the parent
+        for(var i = 0; i < currentCollection.items.length; i++){
+            if((currentCollection.items[i]._id||currentCollection.items[i].id) === collectionId){
+                currentCollection.items.splice(i, 1);
+                break;
+            }
+        }
+
+        utilityCalls.putCollection(currentCollection, function(){
+            console.log("Finished all delete functions");
+        });
+    }
+
+    // Delete the chosen collection and move the child items to the parent.
     function deleteCollectionOnly(collectionId)
     {
         // Grab the child items

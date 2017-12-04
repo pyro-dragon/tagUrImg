@@ -5,7 +5,7 @@ angular.module("CollectionsModule").controller("CollectionsController", ["$scope
 
     function init()
     {
-        
+
     }
 
     $scope.getCurrentCollection = CollectionsService.getCurrentCollection;
@@ -54,8 +54,8 @@ angular.module("CollectionsModule").controller("CollectionsController", ["$scope
         shell.openItem(path);
     };
 
-    $scope.delete = function(collectionId){
-        CollectionsService.deleteCollection(collectionId, false);
+    $scope.delete = function(collectionId, deleteChilderen){
+        CollectionsService.deleteCollection(collectionId, deleteChilderen);
     };
 
     init();
