@@ -362,6 +362,15 @@ angular.module("utils").service("utilityCalls", function()
         getCollectionChildrenQuery(id, success, fail);
     };
 
+    this.getAllCollectionChildren = function(success, fail)
+    {
+        collectionDb.query("main/getChildren", {
+            include_docs:true
+        })
+        .then(success)
+        .catch(fail);
+    };
+
     this.deleteCollection = function(id, success, fail)
     {
         deleteData(id, collectionDb,

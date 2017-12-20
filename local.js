@@ -152,13 +152,18 @@ collectionDb.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                //_rev: "1-b264561af71b46dfb16e11ca038cafef",
+                //_rev: "2-6a90e9d13c9543aebac4100304d3ceaf",
                 views: {
                     getParent: {
                         map: function(doc){
                             emit(doc.parent);
                         }.toString(),
                         reduce: '_count'
+                    },
+                    getChildren: {
+                        map: function(doc){
+                            emit(doc._id, doc.items);
+                        }.toString()
                     }
                 }
             };

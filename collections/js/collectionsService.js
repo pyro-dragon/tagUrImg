@@ -1,4 +1,4 @@
-angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls", function(utilityCalls)
+angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls", "utilityFunctions", function(utilityCalls, utilityFunctions)
 {
     var self = this;
     var currentCollection = {};
@@ -65,6 +65,56 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
                 }, fail
             );
         }
+    };
+
+    this.getCollectionsMap = function(success, fail){
+        var map = [];
+        utilityCalls.getAllCollectionChildren(
+            function(response){
+                // First find the root node
+                utilityFunctions.findIn(response.rows, function(row, index){
+                    if(row.id === "root"){
+                        map.push({
+                            id: row.id,
+                            title: "/",
+                            items: row.value,
+                            name: row.doc.name
+                        });                  // Set the root node
+                        response.rows.splice(index, 1); // Remove this from the list
+                        return true;                    // Exit the loop
+                    }
+                });
+
+                function nodeAdder(children){
+                    angular.forEach(children, function(child){
+                        // Look for matching child elements
+                        utilityFunctions.findIn(response.rows, function(row, index){
+                            if(row.id === (child.id || child._id)){
+                                console.log("Child " + JSON.stringify(child) + " matches " + JSON.stringify(row));
+                                child.parent = row.doc.parent;
+                                child.id = row.id;   // Ensure 'id' is set
+                                child.title = row.doc.name;         // Set the display name
+                                child.items = row.value;            // Replace the child ID with the child object
+                                response.rows.splice(index, 1);     // Remove this from the list
+                                return true;                        // Exit the loop
+                            }
+                        });
+
+                        // Call the function on child elements
+                        if(child.items && child.items.length > 0){
+                            nodeAdder(child.items);
+                        }
+                    });
+                }
+
+                // Now loop through all the nodes to add them to the tree
+                nodeAdder(map[0].items);
+
+                if(typeof success === "function"){
+                    success(map);
+                }
+            }, fail
+        );
     };
 
     this.updateCollection = function(collection, success, fail)

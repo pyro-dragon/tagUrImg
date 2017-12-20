@@ -1,11 +1,22 @@
-angular.module("CollectionsModule").controller("CollectionsController", ["$scope", "CollectionsService", function($scope, CollectionsService)
+angular.module("CollectionsModule").controller("CollectionsController", ["$scope", "CollectionsService", "$uibModal", function($scope, CollectionsService, $uibModal)
 {
     $scope.collectionPath = "";
     $scope.getCollectionPath = CollectionsService.getCollectionPath;
 
     function init()
     {
+        var modalInstance = $uibModal.open(
+        {
+            animation: true,
+            templateUrl: 'collections/collectionExplorer.html',
+            controller: 'collectionExplorerController',
+            resolve: {
+            }
+        });
 
+        modalInstance.result.then(function (newTags)
+        {
+        });
     }
 
     $scope.getCurrentCollection = CollectionsService.getCurrentCollection;
