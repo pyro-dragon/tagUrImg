@@ -1,21 +1,18 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">{{title}}</h3>
+    <h3 class="modal-title" id="modal-title">Select collection</h3>
 </div>
 <div class="modal-body" id="modal-body">
     <div>
         <script type="text/ng-template" id="nodes_renderer.html">
-            <div ui-tree-handle class="tree-node tree-node-content">
+            <div class="tree-node tree-node-content">
                 <a class="btn btn-success btn-xs" ng-if="node.items && node.items.length > 0" data-nodrag ng-click="toggle(this)"><span
                 class="glyphicon"
                 ng-class="{
                 'glyphicon-chevron-right': collapsed,
                 'glyphicon-chevron-down': !collapsed
                 }"></span></a>
-                {{node.title}}
-                <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span
-                class="glyphicon glyphicon-remove"></span></a>
-                <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span
-                class="glyphicon glyphicon-plus"></span></a>
+                <span class="">{{node.title}}</span>
+                <button class="btn btn-primary pull-right" ng-click="select(node)">Select</button>
             </div>
             <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
                 <li ng-repeat="node in node.items" ui-tree-node ng-include="'nodes_renderer.html'">
@@ -23,7 +20,7 @@
             </ol>
         </script>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md-12">
                 <div ui-tree id="tree-root">
                     <ol ui-tree-nodes ng-model="data">
                         <li ng-repeat="node in list" ui-tree-node ng-include="'nodes_renderer.html'"></li>
@@ -32,18 +29,7 @@
             </div>
         </div>
     </div>
-    <p>
-        Old List:
-        <br />
-        {{oldJSON}}
-    </p>
-    <p>
-        New List:
-        <br />
-        {{newJSON}}
-    </p>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="yes()">{{yesLabel}}</button>
-    <button class="btn btn-warning" type="button" ng-click="no()">{{noLable}}</button>
+    <button class="btn btn-danger" type="button" ng-click="cancel()">Cancel</button>
 </div>

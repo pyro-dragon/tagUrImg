@@ -1,4 +1,4 @@
-angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls", "utilityFunctions", function(utilityCalls, utilityFunctions)
+angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls", "utilityFunctions", "$uibModal",function(utilityCalls, utilityFunctions, $uibModal)
 {
     var self = this;
     var currentCollection = {};
@@ -18,7 +18,8 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
     {
         if(currentCollection)
         {
-            utilityCalls.getCollection(collectionId, function(collection)
+            utilityCalls.getCollection(collectionId,
+                function(collection)
                 {
                     currentCollection = collection;
 
@@ -86,25 +87,33 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
                 });
 
                 function nodeAdder(children){
-                    angular.forEach(children, function(child){
-                        // Look for matching child elements
-                        utilityFunctions.findIn(response.rows, function(row, index){
-                            if(row.id === (child.id || child._id)){
-                                console.log("Child " + JSON.stringify(child) + " matches " + JSON.stringify(row));
-                                child.parent = row.doc.parent;
-                                child.id = row.id;   // Ensure 'id' is set
-                                child.title = row.doc.name;         // Set the display name
-                                child.items = row.value;            // Replace the child ID with the child object
-                                response.rows.splice(index, 1);     // Remove this from the list
-                                return true;                        // Exit the loop
-                            }
-                        });
+                    for(var i = children.length - 1; i >= 0; i--){
+                        var child = children[i];
 
-                        // Call the function on child elements
-                        if(child.items && child.items.length > 0){
-                            nodeAdder(child.items);
+                        if(child.type !== "image"){
+                            // Look for matching child elements
+                            utilityFunctions.findIn(response.rows, function(row, index){
+                                if(row.id === (child.id || child._id)){
+
+                                    child.parent = row.doc.parent;
+                                    child.id = row.id;   // Ensure 'id' is set
+                                    child.title = row.doc.name;         // Set the display name
+                                    child.items = row.value;            // Replace the child ID with the child object
+
+                                    response.rows.splice(index, 1);     // Remove this from the list
+                                    return true;                        // Exit the loop
+                                }
+                            });
+
+                            // Call the function on child elements
+                            if(child.items && child.items.length > 0){
+                                nodeAdder(child.items);
+                            }
                         }
-                    });
+                        else {
+                            children.splice(i, 1);
+                        }
+                    }
                 }
 
                 // Now loop through all the nodes to add them to the tree
@@ -173,6 +182,44 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
         {
             deleteCollectionOnly(collectionId);
         }
+    };
+
+    // Open the Collection Explorer dialogue
+    this.openCollectionExplorer = function()
+    {
+        return $uibModal.open(
+        {
+            animation: true,
+            templateUrl: 'collections/collectionExplorer.html',
+            controller: 'collectionExplorerController',
+            resolve: {
+            }
+        }).result;
+    };
+
+    this.addItemToCollection = function(itemId)
+    {
+        self.openCollectionExplorer().then(function(id){
+            self.getCollection(id, function(collection){
+                if(!collection.items){
+                    collection.items = [];
+                }
+                collection.items.push({
+                    id: itemId,
+                    type: "image"
+                });
+
+                self.updateCollection(collection, function(response){
+                    console.log(response);
+                },
+                function(error){
+                    console.log(error);
+                });
+            },
+            function(error){
+                console.log(error);
+            });
+        });
     };
 
     // Delete the chosen collection and child items

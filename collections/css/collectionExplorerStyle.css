@@ -1,0 +1,42 @@
+
+.tree-node {
+    background-color: #f8faff;
+    border: 1px solid #dae2ea;
+    color: #7c9eb2;
+    cursor: pointer;
+    overflow: auto;
+    padding: 10px 50px 10px 10px;
+
+    transition-duration: 0.1s;
+    transition-property: background-color;
+    transition-timing-function: ease-in;
+}
+
+.tree-node:hover{
+    background-color: #428bca;
+}
+
+.nodrop {
+    background-color: #f2dede;
+}
+
+.tree-node-content {
+    margin: 10px;
+}
+.tree-handle {
+    padding: 10px;
+    background: #428bca;
+    color: #FFF;
+    margin-right: 10px;
+}
+
+.angular-ui-tree-handle:hover {
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

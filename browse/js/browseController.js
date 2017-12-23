@@ -1,6 +1,7 @@
-angular.module("browseModule").controller("browseController", ["$scope", "utilityCalls", function($scope, utilityCalls)
+angular.module("browseModule").controller("browseController", ["$scope", "utilityCalls", "CollectionsService", function($scope, utilityCalls, CollectionsService)
 {
     $scope.displayImages = [];
+    $scope.addItemToCollection = CollectionsService.addItemToCollection;
 
     // Do an initial search
     function search(params){

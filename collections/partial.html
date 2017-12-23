@@ -13,10 +13,6 @@
     <span ng-repeat="collection in getCollectionPath() track by $index">/<span ng-click="openCollection(collection._id||collection._id)" class="clickable">{{collection.name}}</span></span>
 </h3>
 
-<p>
-    currentCollection: {{currentCollection}}
-</p>
-
 <div class="collection-container">
     <div ng-if="currentCollection.parent" class="collection-item">
         <div ng-if="item.type!=='image'" class="folder" ng-click="openCollection(currentCollection.parent)">
@@ -27,17 +23,20 @@
         </div>
     </div>
     <div class="collection-item" ng-repeat="item in getCurrentCollection().items track by $index">
-        <img ng-if="item.type=='image'" src="{{item._id}}" ng-click="openImage(item._id)" />
+        <img ng-if="item.type=='image'" ng-src="{{item._id||item.id}}" ng-click="openImage(item._id||item.id)" />
         <div ng-if="item.type!=='image'" class="folder" ng-click="openCollection(item._id||item.id)">
             <img src="./images/folder-black.png" />
             <p class="collection-name">
                 {{item.name}}
             </p>
         </div>
-        <p class="clickable" ng-click="delete(item._id||item.id)">
+        <p ng-if="item.type=='image'" class="clickable" ng-click="delete(item._id||item.id)">
+            delete image
+        </p>
+        <p ng-if="item.type!=='image'" class="clickable" ng-click="delete(item._id||item.id)">
             delete collection
         </p>
-        <p class="clickable" ng-click="delete(item._id||item.id, true)">
+        <p ng-if="item.type!=='image'" class="clickable" ng-click="delete(item._id||item.id, true)">
             delete collection and children
         </p>
     </div>

@@ -8,6 +8,13 @@
 </form>
 <div class="gallery-container">
     <div class="gallery-image" ng-repeat="image in displayImages">
-        <img src="{{image._id}}" ng-click="openImage(image._id)" uib-tooltip="{{image.tags.join(' ')}}" />
+        <div class="image-active-zone">
+            <img ng-src="{{image._id}}" ng-click="openImage(image._id)" uib-tooltip="{{image.tags.join(' ')}}" />
+            <div class="image-buttons">
+                <button class="btn btn-warning" ng-click="addItemToCollection(image._id)">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
