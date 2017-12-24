@@ -172,15 +172,15 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
     };
 
     // The exposed delete function
-    this.deleteCollection = function(collectionId, deleteChilderen)
+    this.deleteCollection = function(collectionId, deleteChilderen, success, fail)
     {
         if(deleteChilderen)
         {
-            deleteCollectionAndChildren(collectionId);
+            deleteCollectionAndChildren(collectionId, success, fail);
         }
         else
         {
-            deleteCollectionOnly(collectionId);
+            deleteCollectionOnly(collectionId, success, fail);
         }
     };
 
@@ -223,7 +223,7 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
     };
 
     // Delete the chosen collection and child items
-    function deleteCollectionAndChildren(collectionId)
+    function deleteCollectionAndChildren(collectionId, success, fail)
     {
         function iterativeDelete(collectioId){
             utilityCalls.getChildCollectionsOf(collectionId, function(collections)
@@ -249,7 +249,8 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
             }
         }
 
-        utilityCalls.putCollection(currentCollection, function(){
+        utilityCalls.putCollection(currentCollection, function(response){
+            currentCollection._rev = response.rev;
             console.log("Finished all delete functions");
         });
     }
@@ -305,7 +306,8 @@ angular.module("CollectionsModule").service("CollectionsService", ["utilityCalls
                         }
                     }
 
-                    utilityCalls.putCollection(currentCollection, function(){
+                    utilityCalls.putCollection(currentCollection, function(response){
+                        currentCollection._rev = response.rev;
                         console.log("Finished all delete functions");
                     });
                 });
