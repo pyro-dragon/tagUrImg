@@ -1,15 +1,20 @@
 <h2>Process</h2>
-<button class="btn btn-primary" ng-click="openTagManager(selectedImages)" ng-disabled="!selectedCount">Add tags</button>
-<button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
-
-<p>
-    Selected Items: {{selectedCount}}
-</p>
+<div class="well sticky-button-bar">
+    <div class="pull-right">
+        <button class="btn btn-default" title="Select All" ng-click="selectAll()"><i class="fa fa-check-circle-o" aria-hidden="true"></i></button>
+        <button class="btn btn-default" title="Select None" ng-click="selectNone()"><i class="fa fa-times-circle-o" aria-hidden="true"></i></button>
+        <button class="btn btn-default" title="Invert Selection" ng-click="invertSelection()"><i class="fa fa-exchange" aria-hidden="true"></i></button>
+    </div>
+    <div>
+        <button class="btn btn-primary" ng-click="openTagManager(selectedImages)" ng-disabled="!selectedCount">Add tags</button>
+        <button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
+    </div>
+</div>
 <p ng-if="loading">
     Loading...
 </p>
 <div class="alert alert-danger" ng-if="error">
-  <strong>Error!</strong> {{error}}
+    <strong>Error!</strong> {{error}}
 </div>
 <div class="image-container">
     <div ng-repeat="image in currentImages" class="image">
