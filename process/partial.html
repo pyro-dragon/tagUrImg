@@ -15,12 +15,15 @@
     <div ng-repeat="image in currentImages" class="image">
         <div class="image-active-zone">
             <img ng-class="{'selected':selectedImages[image.id]}" ng-src="{{image.id}}" ng-click="selectImage(image)" />
-            <div class="button-container">
+            <div class="image-buttons">
                 <button class="btn btn-danger" ng-click="deleteImage(image)">
                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                 </button>
                 <button class="btn btn-primary" ng-click="openTagManager([image])">
                     <i class="fa fa-tags" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-warning" ng-click="addItemToCollection(image.id)">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i>
                 </button>
             </div>
         </div>

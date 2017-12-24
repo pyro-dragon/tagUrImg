@@ -7,14 +7,23 @@ PouchDB.plugin(require('pouchdb-find'));
 // As an indexed DB
 var db = new PouchDB('mydb');
 var tagDB = new PouchDB('tagDB');
+var collectionDb = new PouchDB('collectionDb');
 
 // As a WebSQL DB
 //var db = new PouchDB('mydb', {adapter: 'websql'});
 db.get('_design/main').then(function (doc) {
     console.log("main db dd rev:" + doc._rev);
 });
+tagDB.get('_design/main').then(function (doc) {
+    console.log("tagDB dd rev:" + doc._rev);
+});
+collectionDb.get('_design/main').then(function (doc) {
+    console.log("collectionDb dd rev:" + doc._rev);
+});
 
 var override = false;
+var overrideConfig = false;
+var overrideCollection = false;
 var destroy = false;
 
 // Init the database
@@ -24,7 +33,7 @@ db.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                //_rev: "2-e66450fd50c042c3b2cfab9587c84863",
+                //_rev: "3-ea82b1e24445448b952d023950456c40",
                 views: {
                     getNew: {
                         map: function(doc){
@@ -78,12 +87,12 @@ db.createIndex(
 
 PouchDB.debug.enable('pouchdb:find');
 
-// Init the program options 
+// Init the program options
 db.get("config", function (error, response) {
     //var overrideConfig = true;
     if(overrideConfig || (error && error.status === 404))
     {
-        var ddoc = {
+        var doc = {
             _id: 'config',
             //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
             directories: [],
@@ -94,7 +103,7 @@ db.get("config", function (error, response) {
             allowedFileTypes: ["jpeg", "jpg", "webp", "png", "apng", "tiff", "pdf", "bmp", "ico"]
         };
 
-        db.put(ddoc).then(function(){
+        db.put(doc).then(function(){
             console.log("Created the config doc");
         }).catch(function(error){
             console.log("An error occured creating the config doc: " + error);
@@ -110,6 +119,68 @@ db.get("config", function (error, response) {
 db.get('config').then(function (doc) {
     console.log("config rev:" + doc._rev);
     console.log(doc);
+});
+
+// Init the root collection
+collectionDb.get("root", function (error, response) {
+    //var overrideConfig = true;
+    if(overrideCollection || (error && error.status === 404))
+    {
+        var doc = {
+            _id: 'root',
+            //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
+            name:"/",
+            items:[]
+        };
+
+        collectionDb.put(doc).then(function(){
+            console.log("Created the root collection doc");
+        }).catch(function(error){
+            console.log("An error occured creating the root collection doc: " + error);
+        });
+    }
+    else
+    {
+        console.log("Root document exists.");
+    }
+});
+
+collectionDb.get("_design/main", function (error, response) {
+    if(error || overrideCollection)
+    {
+        if(overrideCollection || error.status === 404)
+        {
+            var ddoc = {
+                _id: '_design/main',
+                //_rev: "2-6a90e9d13c9543aebac4100304d3ceaf",
+                views: {
+                    getParent: {
+                        map: function(doc){
+                            emit(doc.parent);
+                        }.toString(),
+                        reduce: '_count'
+                    },
+                    getChildren: {
+                        map: function(doc){
+                            emit(doc._id, doc.items);
+                        }.toString()
+                    }
+                }
+            };
+
+            collectionDb.put(ddoc).then(function(){
+                console.log("Created the collection main design doc");
+            }).catch(function(error){
+                console.log("An error occured creating the collection design doc: " + error);
+            });
+        }
+        else {
+            console.log("An error occured getting the main design doc: " + error);
+        }
+    }
+    else {
+        console.log("Main design document exists.");
+    }
 });
 
 // Don't need a design doc for tagDB yet

@@ -1,9 +1,11 @@
-angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", "settingsService", function($scope, $uibModal, utilityCalls, settingsService)
+angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, utilityCalls, settingsService, CollectionsService)
 {
     $scope.currentImages = [];
     $scope.selectedImages = {};
     $scope.selectedCount = 0;
     $scope.loading = false;
+
+    $scope.addItemToCollection = CollectionsService.addItemToCollection;
 
     $scope.saveSelected = function(){
 
