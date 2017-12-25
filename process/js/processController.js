@@ -111,6 +111,31 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         delete $scope.error;
     };
 
+    $scope.selectAll = function(){
+
+        $scope.selectedImages = {};
+
+        angular.forEach($scope.currentImages, function(image){
+            $scope.selectedImages[image.id] = image;
+        });
+
+        $scope.selectedCount = $scope.currentImages.length;
+    };
+
+    $scope.selectNone = function(){
+
+        $scope.selectedImages = {};
+
+        $scope.selectedCount = 0;
+    };
+
+    $scope.invertSelection = function(){
+
+        angular.forEach($scope.currentImages, function(image){
+            $scope.selectImage(image);
+        });
+    };
+
     $scope.deleteImage = function(image)
     {
         utilityCalls.deleteImage(
