@@ -1,12 +1,22 @@
-img{
-    max-width: 300px;
-    max-height: 300px;
-    min-width: 100px;
-    min-height: 50px;
-    cursor: pointer;
+.page-container{
+    overflow: inherit; /* Override the overflow as sticky doesn't work with it */
 }
 
-img.selected{
+.sticky-button-bar{
+    position: sticky;
+    top: 65px;
+    z-index: 100;
+}
+
+img{
+    cursor: pointer;
+    max-height: 300px;
+    max-width: 300px;
+    min-height: 50px;
+    min-width: 100px;
+}
+
+.selected{
     border: solid green 4px;
 }
 
