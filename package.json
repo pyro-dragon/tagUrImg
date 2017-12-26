@@ -1,29 +1,61 @@
 {
-  "name": "image-tagger",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "angular": "^1.6.6",
-    "angular-css": "^1.0.8",
-    "angular-route": "^1.6.6",
-    "angular-router": "0.0.2",
-    "angular-sanitize": "^1.6.6",
-    "angular-ui-bootstrap": "^2.5.0",
-    "angular-ui-select": "^0.12.100",
-    "angular-ui-tree": "^2.22.6",
-    "bootstrap": "^3.3.7",
-    "bootstrap-ui": "^2.3.3",
-    "electron": "1.7.8",
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.2.1",
-    "pouchdb-browser": "^6.3.4",
-    "pouchdb-find": "^6.3.4"
-  },
-  "dependencies": {}
+    "name": "tagUrImg",
+    "version": "1.0.0",
+    "description": "A desktop image tagging apllication.",
+    "author": "Robet Pettefar <rpettefar@dragonscancode.com> (http://www.dragonscancode.com)",
+    "main": "main.js",
+    "scripts": {
+        "postinstall": "install-app-deps",
+        "start": "npm install && electron ./app",
+        "pack": "build --dir",
+        "dist": "build"
+    },
+    "license": "ISC",
+    "build": {
+        "appId": "yourappid",
+        "dmg": {
+            "contents": [
+                {
+                    "x": 110,
+                    "y": 150
+                },
+                {
+                    "x": 240,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        },
+        "linux": {
+            "category": "Graphics",
+            "target": [
+                "AppImage",
+                "deb"
+            ]
+        },
+        "win": {
+            "target": "NSIS",
+            "icon": "build/icon.ico"
+        }
+    },
+    "devDependencies": {
+        "angular": "^1.6.6",
+        "angular-css": "^1.0.8",
+        "angular-route": "^1.6.6",
+        "angular-router": "0.0.2",
+        "angular-sanitize": "^1.6.6",
+        "angular-ui-bootstrap": "^2.5.0",
+        "angular-ui-select": "^0.12.100",
+        "angular-ui-tree": "^2.22.6",
+        "bootstrap": "^3.3.7",
+        "bootstrap-ui": "^2.3.3",
+        "electron": "1.7.8",
+        "electron-builder": "^19.49.2",
+        "font-awesome": "^4.7.0",
+        "jquery": "^3.2.1",
+        "pouchdb-browser": "^6.3.4",
+        "pouchdb-find": "^6.3.4"
+    },
+    "dependencies": {}
 }

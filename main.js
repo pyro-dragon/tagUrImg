@@ -21,7 +21,13 @@ function createWindow ()
   	}))
 
 	// Open the DevTools.
-	win.webContents.openDevTools()
+	//win.webContents.openDevTools()
+
+    // Hide the menu bar
+    win.setMenu(null);
+
+    // Set the window to maximised
+    win.maximize();
 
 	// Emitted when the window is closed.
 	win.on('closed', () => {
