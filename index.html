@@ -27,6 +27,9 @@
         <script src="utils/utlityFunctions.js"></script>
         <script src="utils/utilityCalls.js"></script>
 
+        <script src="scanner/js/scannerModule.js"></script>
+        <script src="scanner/js/scannerService.js"></script>
+
         <script src="confirmationDialogue/js/confirmationDialogueModule.js"></script>
         <script src="confirmationDialogue/js/confirmationDialogueController.js"></script>
 
@@ -109,7 +112,10 @@
 
 		<footer class="footer">
 			<div class="container">
-				<p class="text-muted">Created by DragonsCanCode.com <i class="fa fa-copyright" aria-hidden="true"></i>
+                            <p style="float:left">
+                                <i class="fa fa-database" aria-hidden="true"></i> {{scanStatus()}}
+                            </p>
+				<p class="text-muted signature">Created by DragonsCanCode.com <i class="fa fa-copyright" aria-hidden="true"></i>
 2017</p>
 			</div>
 		</footer>
