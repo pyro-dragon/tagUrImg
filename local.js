@@ -94,13 +94,13 @@ db.get("config", function (error, response) {
     {
         var doc = {
             _id: 'config',
-            //_rev: "40-802d6d9dc65b4d8cb7003ba9986e61ce",
+            //_rev: "3-d73c3544c4e24e50a9987de335250a6c",
             directories: [],
             bannedFiles: [],
 			firstTime: true,
 			showHints: true,
 			itemsPerPage: 40,
-            allowedFileTypes: ["jpeg", "jpg", "webp", "png", "apng", "tiff", "pdf", "bmp", "ico"]
+            allowedFileTypes: ["jpeg", "jpg", "webp", "png", "apng", "tiff", "pdf", "bmp", "ico", "gif"]
         };
 
         db.put(doc).then(function(){
