@@ -5,7 +5,7 @@ const fs = require("fs")
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win;
 
 function createWindow ()
 {
@@ -21,7 +21,7 @@ function createWindow ()
   	}))
 
 	// Open the DevTools.
-	//win.webContents.openDevTools()
+	win.webContents.openDevTools()
 
     // Hide the menu bar
     win.setMenu(null);
