@@ -8,7 +8,7 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
 
         if(Array.isArray(params))
         {
-            utilityCalls.getImagesByTags(params,
+            utilityCalls.getImagesByTags(params, null,
                 function(results)
                 {
                     console.log("success!");

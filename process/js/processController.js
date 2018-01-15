@@ -157,7 +157,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
     function getOutstandingItems()
     {
         $scope.loading = true;
-        utilityCalls.getNewDocs(
+        utilityCalls.getNewDocs(null,
             function(result)
             {
                 $scope.loading = false;

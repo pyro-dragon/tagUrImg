@@ -31,12 +31,15 @@ angular.module("utils").service("utilityCalls", function()
         self.putImage(image.doc, success, fail);
     };
 
-    this.getNewDocs = function(success, fail, startKey, endKey)
+	// Return the list of new docs
+    this.getNewDocs = function(options, success, fail)
     {
-        var options = {};
-        startKey ? options.startkey = startKey : options.limit = 20;
-        endKey ? options.endkey = endKey : null;
-        newDocsQuery(false, options,
+		newDocsQuery(
+			false,
+			{
+				limit: options? options.itemsPerPage:undefined,
+				startKey: options? options.startKey:undefined
+			},
             function (result)
             {
                 if(typeof success === "function")
@@ -54,10 +57,39 @@ angular.module("utils").service("utilityCalls", function()
         );
     };
 
+    this.getImagesByTags = function(tags, options, success, fail)
+    {
+		db.find(
+			{
+				selector: {"tags": { "$all": tags}},
+				limit: options? options.itemsPerPage:undefined,
+				startKey: options? options.startKey: undefined
+			}
+		)
+		.then(
+			function(result)
+			{
+				if(typeof success === "function")
+				{
+					success(result.docs);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
+    };
+
     //-------------------------------------------------------------------------
     // New Document functions
     //-------------------------------------------------------------------------
-    this.getNewDocCount = function(success, fail)
+    this.getNewDocCount = function(options, success, fail)
     {
         newDocsQuery(true, {},
             function (result)
@@ -285,34 +317,6 @@ angular.module("utils").service("utilityCalls", function()
 			}
 		});
 	};
-
-    this.getImagesByTags = function(tags, success, fail)
-    {
-        db.find(
-            {
-                selector: {"tags": { "$all": tags}},
-                limit: 40
-            }
-        )
-        .then(
-            function(result)
-            {
-                if(typeof success === "function")
-                {
-                    success(result.docs);
-                }
-            }
-        )
-        .catch(
-            function(error)
-            {
-                if(typeof fail === "function")
-                {
-                    fail(error);
-                }
-            }
-        );
-    };
 
     //-------------------------------------------------------------------------
     // Collection functions
