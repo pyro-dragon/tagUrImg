@@ -31,39 +31,14 @@ angular.module("utils").service("utilityCalls", function()
         self.putImage(image.doc, success, fail);
     };
 
-	// Return the list of new docs
-    this.getNewDocs = function(options, success, fail)
-    {
-		newDocsQuery(
-			false,
-			{
-				limit: options? options.itemsPerPage:undefined,
-				startKey: options? options.startKey:undefined
-			},
-            function (result)
-            {
-                if(typeof success === "function")
-                {
-                    success(result.rows);
-                }
-            },
-            function (err)
-            {
-                if(typeof fail === "function")
-                {
-                    fail(err);
-                }
-            }
-        );
-    };
-
     this.getImagesByTags = function(tags, options, success, fail)
     {
 		db.find(
 			{
 				selector: {"tags": { "$all": tags}},
 				limit: options? options.itemsPerPage:undefined,
-				startKey: options? options.startKey: undefined
+				startkey: options? options.startKey: undefined,
+                descending: options? options.reverse: undefined
 			}
 		)
 		.then(
@@ -71,7 +46,7 @@ angular.module("utils").service("utilityCalls", function()
 			{
 				if(typeof success === "function")
 				{
-					success(result.docs);
+					success(result.rows, result.total_rows);
 				}
 			}
 		)
@@ -103,6 +78,33 @@ angular.module("utils").service("utilityCalls", function()
                     else {
                         success(0);
                     }
+                }
+            },
+            function (err)
+            {
+                if(typeof fail === "function")
+                {
+                    fail(err);
+                }
+            }
+        );
+    };
+
+	// Return the list of new docs
+    this.getNewDocs = function(options, success, fail)
+    {
+		newDocsQuery(
+			false,
+			{
+				limit: options? options.itemsPerPage:undefined,
+				startkey: options? options.startKey:undefined,
+                descending: options? options.reverse: undefined
+			},
+            function (result)
+            {
+                if(typeof success === "function")
+                {
+                    success(result.rows, result.total_rows);
                 }
             },
             function (err)

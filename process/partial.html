@@ -16,6 +16,22 @@
 <div class="alert alert-danger" ng-if="error">
     <strong>Error!</strong> {{error}}
 </div>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li>
+            <a class="clickable" aria-label="Previous" ng-disabled="!hasPrevious" ng-click="getPreviouse()">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+            <li ng-repeat="page in pageArray"><a ng-if="page == currentPage" aria-label="Page {{page}}">*{{page}}*</a><a ng-if="page != currentPage" aria-label="Page {{page}}">{{page}}</a></li>
+        <li>
+            <a class="clickable" aria-label="Next" ng-disabled="!hasNext" ng-click="getNext()">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 <div class="image-container">
     <div ng-repeat="image in currentImages" class="image">
         <div class="image-active-zone">
@@ -37,3 +53,18 @@
         </p>
     </div>
 </div>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li>
+            <a class="clickable" aria-label="Previous" ng-disabled="!hasPrevious" ng-click="getPreviouse()">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+            <li ng-repeat="page in pageArray"><a ng-if="page == currentPage" aria-label="Page {{page}}">*{{page}}*</a><a ng-if="page != currentPage" aria-label="Page {{page}}">{{page}}</a></li>
+        <li>
+            <a class="clickable" aria-label="Next" ng-disabled="!hasNext" ng-click="getNext()">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

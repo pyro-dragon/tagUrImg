@@ -1,11 +1,23 @@
-angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, utilityCalls, settingsService, CollectionsService)
+angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "processService", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, processService, utilityCalls, settingsService, CollectionsService)
 {
-    $scope.currentImages = [];
+    $scope.currentImages = processService.currentPageContents;
     $scope.selectedImages = {};
     $scope.selectedCount = 0;
-    $scope.loading = false;
+    $scope.loading = processService.loading;
+    $scope.pageCount = processService.pageCount;
+    $scope.currentPage = processService.currentPage;
 
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
+    $scope.hasNext = !!processService.nextPageStartKey;
+    $scope.getNext = function(){
+        processService.getNextPage(updateVariables);
+    };
+    $scope.hasPrevious = !!processService.lastPageStartKey;
+    $scope.getPreviouse = function(){
+        processService.getPrevPage(updateVariables);
+    };
+
+    $scope.pageArray = [];
 
     $scope.saveSelected = function(){
 
@@ -153,27 +165,32 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         );
     };
 
-    // Get the new items
-    function getOutstandingItems()
-    {
-        $scope.loading = true;
-        utilityCalls.getNewDocs(null,
-            function(result)
-            {
-                $scope.loading = false;
-                $scope.currentImages = result;
-            },
-            function(error)
-            {
-                $scope.loading = false;
-                console.log("Error getting outstanding items: " + error);
-            }
-        );
+    // Create an array so that ng-repeatcan be used to create page markers
+    function makePageArray(){
+        for(var i = 0; i < processService.pageCount; i++){
+            $scope.pageArray[i] = i+1;
+        }
+    }
+
+    // Update all the required variables after getting a pager
+    function updateVariables(){
+        $scope.currentImages = processService.currentPageContents;
+        $scope.loading = processService.loading;
+        $scope.hasNext = !!processService.nextPageStartKey;
+        $scope.hasPrevious = !!processService.lastPageStartKey;
+        $scope.currentPage = processService.currentPage;
     }
 
     function init()
     {
-        getOutstandingItems();
+        updateVariables();
+        makePageArray();
+
+        processService.getFirstPage(function(images){
+            makePageArray();
+
+            updateVariables();
+        });
     }
 
     init();
