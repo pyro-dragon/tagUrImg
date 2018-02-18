@@ -6,6 +6,9 @@
         <span class="input-group-btn"><button class="btn btn-default" type="submit" ng-click="search()">Search</button></span>
     </div>
 </form>
+<div>
+    <button ng-click="getPreviousPage()" ng-disableddd="!enablePreviousPage()" class="btn btn-default">Previous</button><button ng-click="getNextPage()" ng-disabled="!enableNextPage()" class="btn btn-default">Next</button>
+</div>
 <div class="gallery-container">
     <div class="gallery-image" ng-repeat="image in displayImages">
         <div class="image-active-zone">

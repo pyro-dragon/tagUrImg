@@ -35,9 +35,16 @@ angular.module("utils").service("utilityCalls", function()
     {
 		db.find(
 			{
-				selector: {"tags": { "$all": tags}},
-				limit: options? options.itemsPerPage:undefined,
-				startkey: options? options.startKey: undefined,
+				selector: {
+                    tags: {
+                        "$all": tags
+                    },
+                    _id: {
+                        "$gte": options && !options.reverse? options.startkey: undefined,
+                        "$lte": options && options.reverse? options.startkey: undefined
+                    }
+                },
+				limit: options? options.itemsPerPage: undefined,
                 descending: options? options.reverse: undefined
 			}
 		)
@@ -46,7 +53,7 @@ angular.module("utils").service("utilityCalls", function()
 			{
 				if(typeof success === "function")
 				{
-					success(result.rows, result.total_rows);
+					success(result);
 				}
 			}
 		)
@@ -75,7 +82,8 @@ angular.module("utils").service("utilityCalls", function()
                     {
                         success(result.rows[0].value);
                     }
-                    else {
+                    else
+                    {
                         success(0);
                     }
                 }
@@ -93,6 +101,32 @@ angular.module("utils").service("utilityCalls", function()
 	// Return the list of new docs
     this.getNewDocs = function(options, success, fail)
     {
+		// db.find(
+		// 	{
+		// 		selector: {"tags": { "$size": 0}},
+		// 		limit: options? options.itemsPerPage:undefined,
+		// 		startkey: options? options.startKey: undefined,
+        //         descending: options? options.reverse: undefined
+		// 	}
+		// )
+		// .then(
+		// 	function(result)
+		// 	{
+		// 		if(typeof success === "function")
+		// 		{
+		// 			success(result.docs, result.total_rows);
+		// 		}
+		// 	}
+		// )
+		// .catch(
+		// 	function(error)
+		// 	{
+		// 		if(typeof fail === "function")
+		// 		{
+		// 			fail(error);
+		// 		}
+		// 	}
+		// );
 		newDocsQuery(
 			false,
 			{
