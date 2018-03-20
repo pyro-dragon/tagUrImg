@@ -7,7 +7,11 @@
     </div>
 </form>
 <div>
-    <button ng-click="getPreviousPage()" ng-disableddd="!enablePreviousPage()" class="btn btn-default">Previous</button><button ng-click="getNextPage()" ng-disabled="!enableNextPage()" class="btn btn-default">Next</button>
+    <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage()" class="btn btn-default">Previous</button>
+    <button ng-click="getNextPage()" ng-disabled="!enableNextPage()" class="btn btn-default">Next</button>
+    <p ng-if="loading()">
+        Loading...
+    </p>
 </div>
 <div class="gallery-container">
     <div class="gallery-image" ng-repeat="image in displayImages">

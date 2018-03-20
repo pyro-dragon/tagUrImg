@@ -33,7 +33,7 @@ db.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                _rev: "2-12feb76b79b74a31a5298d4eb25264f2",
+                //_rev: "2-12feb76b79b74a31a5298d4eb25264f2",
                 views: {
                     getNew: {
                         map: function(doc){
@@ -70,7 +70,7 @@ db.get("_design/main", function (error, response) {
         console.log("Main design document exists.");
     }
 });
-
+PouchDB.debug.enable('pouchdb:find');
 // Create tagging index
 db.createIndex(
     {
@@ -78,11 +78,23 @@ db.createIndex(
             {
                 name: "tags.[]",
                 type: "string"
-            }
+            }, {name: "_id", type: "string"}
         ],
         name: "tag_index"
     }
 );
+
+// Create id index
+db.createIndex(
+    {
+        fields: ["_id"],
+        name: "id_index"
+    }
+).then(function (result) {
+  console.log(result);
+}).catch(function (err) {
+  console.log(err);
+});
 
 PouchDB.debug.enable('pouchdb:find');
 

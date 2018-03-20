@@ -42,15 +42,22 @@ angular.module("utils").service("utilityCalls", function()
                     _id: {
                         "$gte": options && !options.reverse? options.startkey: undefined,
                         "$lte": options && options.reverse? options.startkey: undefined
+                        //"$lt": "furp"
+                        //"$gte": options.startkey
                     }
                 },
 				limit: options? options.itemsPerPage: undefined,
-                descending: options? options.reverse: undefined
+                sort: options && options.reverse? [{"_id": "desc"}]: undefined
 			}
 		)
 		.then(
 			function(result)
 			{
+                // Switch the order back to accending if we are going backwards
+                if(options && Array.isArray(result.docs) && options.reverse){
+                    result.docs = result.docs.reverse();
+                }
+
 				if(typeof success === "function")
 				{
 					success(result);

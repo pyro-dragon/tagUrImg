@@ -19,6 +19,10 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
         return !browseService.atStart;
     };
 
+    $scope.loading = function(){
+        return browseService.loading;
+    }
+
     $scope.search = function()
     {
         if($scope.searchParams)
