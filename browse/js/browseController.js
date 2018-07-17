@@ -4,11 +4,11 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
 
     $scope.getNextPage = function(){
-        browseService.getNextPage((images)=>{$scope.displayImages = images});
+        browseService.getNextPage((images)=>{$scope.displayImages = images; $scope.$apply();});
     };
 
     $scope.getPreviousPage = function(){
-         browseService.getPreviousPage((images)=>{$scope.displayImages = images});
+         browseService.getPreviousPage((images)=>{$scope.displayImages = images; $scope.$apply();});
     };
 
     $scope.enableNextPage = function(){
@@ -21,13 +21,13 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
 
     $scope.loading = function(){
         return browseService.loading;
-    }
+    };
 
     $scope.search = function()
     {
         if($scope.searchParams)
         {
-            browseService.search($scope.searchParams.split(" "), undefined, false, (images)=>{$scope.displayImages = images});
+            browseService.search($scope.searchParams.split(" "), undefined, false, (images)=>{$scope.displayImages = images; $scope.$apply();});
         }
     };
 

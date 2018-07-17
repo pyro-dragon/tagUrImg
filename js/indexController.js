@@ -19,11 +19,10 @@ angular.module("indexModule").controller("indexController", ["$scope", "scannerS
 
     $scope.getNewCount = function()
     {
-        utilityCalls.getNewDocCount(null, 
+        utilityCalls.getNewDocCount(null,
             function(newCount)
             {
                 currentNewCount.value = newCount;
-                $scope.$apply();
             },
             function(error)
             {

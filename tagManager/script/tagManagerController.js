@@ -48,12 +48,12 @@ angular.module("tagManagerModule", []).controller("tagManagerController", ["$sco
         );
 
         // Create a new set using the first lot of tags
-        var setOfTags = new Set(selectedImages[Object.keys(selectedImages)[0]].doc.tags);
+        var setOfTags = new Set(selectedImages[Object.keys(selectedImages)[0]].tags);
 
         // Create an intersection of all the tags so that we only have tags common to all.
         angular.forEach(selectedImages, function(image)
         {
-            var tmpSet = new Set(image.doc.tags);
+            var tmpSet = new Set(image.tags);
             setOfTags = new Set([...setOfTags].filter(x => tmpSet.has(x)));
         });
 

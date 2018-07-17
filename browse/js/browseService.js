@@ -8,7 +8,6 @@ angular.module("browseModule").service("browseService", ["utilityCalls", "settin
     this.currentPage = 0;
     this.nextPageStartKey = undefined;
     this.lastPageStartKey = undefined;
-    this.loading = false;
     this.atStart = true;
     this.atEnd = true;
 

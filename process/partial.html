@@ -10,9 +10,13 @@
         <button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
     </div>
 </div>
-<p ng-if="loading">
-    Loading...
-</p>
+<div>
+    <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage() || loading()" class="btn btn-default">Previous</button>
+    <button ng-click="getNextPage()" ng-disabled="!enableNextPage() || loading()" class="btn btn-default">Next</button>
+    <p ng-if="loading()">
+        Loading...
+    </p>
+</div>
 <div class="alert alert-danger" ng-if="error">
     <strong>Error!</strong> {{error}}
 </div>
@@ -35,7 +39,7 @@
 <div class="image-container">
     <div ng-repeat="image in currentImages" class="image">
         <div class="image-active-zone">
-            <img ng-class="{'selected':selectedImages[image.id]}" ng-src="{{image.id}}" ng-click="selectImage(image)" />
+            <img ng-class="{'selected':selectedImages[image._id]}" ng-src="{{image._id}}" ng-click="selectImage(image)" />
             <div class="image-buttons">
                 <button class="btn btn-danger" ng-click="deleteImage(image)">
                     <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -43,7 +47,7 @@
                 <button class="btn btn-primary" ng-click="openTagManager([image])">
                     <i class="fa fa-tags" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-warning" ng-click="addItemToCollection(image.id)">
+                <button class="btn btn-warning" ng-click="addItemToCollection(image._id)">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
                 </button>
             </div>

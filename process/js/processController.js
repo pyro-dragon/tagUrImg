@@ -17,6 +17,26 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         processService.getPrevPage(updateVariables);
     };
 
+    $scope.getNextPage = function(){
+        processService.getNextPage((images)=>{$scope.currentImages = images});
+    };
+
+    $scope.getPreviousPage = function(){
+         processService.getPreviousPage((images)=>{$scope.currentImages = images});
+    };
+
+    $scope.enableNextPage = function(){
+        return !processService.atEnd;
+    };
+
+    $scope.enablePreviousPage = function(){
+        return !processService.atStart;
+    };
+
+    $scope.loading = function(){
+        return processService.loading;
+    }
+
     $scope.pageArray = [];
 
     $scope.saveSelected = function(){
@@ -26,7 +46,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         {
             if ($scope.selectedImages.hasOwnProperty(imageID))
             {
-                if($scope.selectedImages[imageID].doc.tags === undefined || $scope.selectedImages[imageID].doc.tags.length === 0)
+                if($scope.selectedImages[imageID].tags === undefined || $scope.selectedImages[imageID].tags.length === 0)
                 {
                     console.log("Not every selected image has tags set.");
                     $scope.error = "Not every selected image has tags set.";
@@ -53,9 +73,9 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                         var extractedData = [];
                         angular.forEach($scope.selectedImages, function(image)
                         {
-                            image.doc.modified = Date.now();
-                            image.doc.new = false;
-                            extractedData.push(image.doc);
+                            image.modified = Date.now();
+                            image.new = false;
+                            extractedData.push(image);
                         });
 
                         utilityCalls.putImage(extractedData,
@@ -102,7 +122,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         {
             angular.forEach(selectedImages, function(image)
             {
-                image.doc.tags = Array.from(new Set(image.doc.tags.concat(newTags))) ;
+                image.tags = Array.from(new Set(image.tags.concat(newTags))) ;
             });
         });
     };
@@ -110,13 +130,13 @@ angular.module("processModule", []).controller("processController", ["$scope", "
     $scope.selectImage = function(image)
     {
         // Add or remove the image from the selection
-        if($scope.selectedImages[image.id])
+        if($scope.selectedImages[image._id])
         {
-            delete $scope.selectedImages[image.id];
+            delete $scope.selectedImages[image._id];
             $scope.selectedCount--;
         }
         else {
-            $scope.selectedImages[image.id] = image;
+            $scope.selectedImages[image._id] = image;
             $scope.selectedCount++;
         }
 
@@ -128,7 +148,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         $scope.selectedImages = {};
 
         angular.forEach($scope.currentImages, function(image){
-            $scope.selectedImages[image.id] = image;
+            $scope.selectedImages[image._id] = image;
         });
 
         $scope.selectedCount = $scope.currentImages.length;
@@ -155,7 +175,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
             function()
             {
                 settingsService.banFile(
-                    image.id,
+                    image._id,
                     function()
                     {
                         $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
@@ -165,31 +185,10 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         );
     };
 
-    // Create an array so that ng-repeatcan be used to create page markers
-    function makePageArray(){
-        for(var i = 0; i < processService.pageCount; i++){
-            $scope.pageArray[i] = i+1;
-        }
-    }
-
-    // Update all the required variables after getting a pager
-    function updateVariables(){
-        $scope.currentImages = processService.currentPageContents;
-        $scope.loading = processService.loading;
-        $scope.hasNext = !!processService.nextPageStartKey;
-        $scope.hasPrevious = !!processService.lastPageStartKey;
-        $scope.currentPage = processService.currentPage;
-    }
-
     function init()
     {
-        updateVariables();
-        makePageArray();
-
-        processService.getFirstPage(function(images){
-            makePageArray();
-
-            updateVariables();
+        processService.getCurrentPage(function(content){
+            $scope.currentImages = content;
         });
     }
 

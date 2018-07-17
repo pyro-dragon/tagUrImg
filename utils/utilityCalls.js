@@ -42,8 +42,6 @@ angular.module("utils").service("utilityCalls", function()
                     _id: {
                         "$gte": options && !options.reverse? options.startkey: undefined,
                         "$lte": options && options.reverse? options.startkey: undefined
-                        //"$lt": "furp"
-                        //"$gte": options.startkey
                     }
                 },
 				limit: options? options.itemsPerPage: undefined,
@@ -108,54 +106,32 @@ angular.module("utils").service("utilityCalls", function()
 	// Return the list of new docs
     this.getNewDocs = function(options, success, fail)
     {
-		// db.find(
-		// 	{
-		// 		selector: {"tags": { "$size": 0}},
-		// 		limit: options? options.itemsPerPage:undefined,
-		// 		startkey: options? options.startKey: undefined,
-        //         descending: options? options.reverse: undefined
-		// 	}
-		// )
-		// .then(
-		// 	function(result)
-		// 	{
-		// 		if(typeof success === "function")
-		// 		{
-		// 			success(result.docs, result.total_rows);
-		// 		}
-		// 	}
-		// )
-		// .catch(
-		// 	function(error)
-		// 	{
-		// 		if(typeof fail === "function")
-		// 		{
-		// 			fail(error);
-		// 		}
-		// 	}
-		// );
-		newDocsQuery(
-			false,
+		db.find(
 			{
+				selector: {"tags": { "$size": 0}},
 				limit: options? options.itemsPerPage:undefined,
-				startkey: options? options.startKey:undefined,
+				startkey: options? options.startKey: undefined,
                 descending: options? options.reverse: undefined
-			},
-            function (result)
-            {
-                if(typeof success === "function")
-                {
-                    success(result.rows, result.total_rows);
-                }
-            },
-            function (err)
-            {
-                if(typeof fail === "function")
-                {
-                    fail(err);
-                }
-            }
-        );
+			}
+		)
+		.then(
+			function(result)
+			{
+				if(typeof success === "function")
+				{
+					success(result.docs, result.total_rows);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
     };
 
     //-------------------------------------------------------------------------
@@ -558,5 +534,41 @@ angular.module("utils").service("utilityCalls", function()
 
             return docs;
         }
+    };
+
+    // Basic Mango Search
+    this.mangoSearch = function(search, options, success, fail)
+    {
+		db.find(
+			{
+				selector: search,
+				limit: options? options.itemsPerPage : undefined,
+				startkey: options? (options.reverse? options.endIndex : options.startIndex) : undefined,
+                sort: options && options.reverse? [{"_id": "desc"}] : undefined
+			}
+		)
+		.then(
+			function(result)
+			{
+                // Switch the order back to accending if we are going backwards
+                if(options && Array.isArray(result.docs) && options.reverse){
+                    result.docs = result.docs.reverse();
+                }
+
+				if(typeof success === "function")
+				{
+					success(result.docs);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
     };
 });

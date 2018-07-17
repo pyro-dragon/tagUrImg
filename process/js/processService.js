@@ -1,4 +1,4 @@
-angular.module("processModule").service("processService", ["utilityCalls", "settingsService", function(utilityCalls, settingsService)
+angular.module("processModule").service("processService", ["utilityCalls", "settingsService", "pagingService", function(utilityCalls, settingsService, pagingService)
 {
     var self = this;
 
@@ -6,123 +6,86 @@ angular.module("processModule").service("processService", ["utilityCalls", "sett
     this.currentPage = 0;
     this.nextPageStartKey = undefined;
     this.lastPageStartKey = undefined;
-    this.loading = false;
-    this.pageCount = 0;
+    this.serviceInitialised = false;
+    this.getCurrentPage = getCurrentPage;
 
-    function init(){
+    // Accessable functions
+    this.getNextPage = getNextPage;
+    this.getPreviousPage = getPreviousPage;
 
-    }
+    var postInitFunction = function(){};    // A function to run after init.
 
-    this.getFirstPage = function(success, fail){
+    var pageSearch = {"tags": { "$size": 0}};
+
+    var pageMetaData = new PageMetaData();
+
+    function init()
+    {
+        // Do the initial search for the data
         settingsService.getConfig(function(settings){
 
-            loading = true;
-            utilityCalls.getNewDocs(
-                {
-                    itemsPerPage: settings.itemsPerPage +1, // We want to get a handle on the next page start position.
-                },
-                function(result, totalResults)
-                {
-                    self.loading = false;
-                    self.nextPageStartKey = result.pop().id;
-                    self.currentPage = 1;
-                    self.currentPageContents = result;
-                    self.pageCount = Math.ceil(totalResults / settings.itemsPerPage);
+            self.loading = true;
 
-                    if(typeof success === "function"){
-                        success(result, totalResults);
-                    }
-                },
-                function(error)
-                {
-                    loading = false;
-                    console.error("Error on getting the first page: " + error);
+            // Save the items-per-page count
+            pageMetaData = new PageMetaData(settings.itemsPerPage);
 
-                    if(typeof fail === "function"){
-                        fail(error);
-                    }
-                }
-            );
+            getPage(false, function(content){
+                self.serviceInitialised = true;
+                self.loading = false;
+                postInitFunction(content);
+            });
         });
-    };
+    }
 
-    this.getNextPage = function(success, fail){
-        if(self.nextPageStartKey){
-            settingsService.getConfig(function(settings){
-                loading = true;
+    function getPage(reverse, success, fail)
+    {
+        pagingService.getPage(pageSearch, pageMetaData, reverse, function(page)
+        {
+            self.loading = false;
+            self.currentPageContents = page.content;
+            this.lastPageStartKey = page.metaData.startIndex;
+            this.nextPageStartKey = page.metaData.endIndex;
 
-                    utilityCalls.getNewDocs(
-                    {
-                        itemsPerPage: settings.itemsPerPage +1, // We want to get a handle on the next page start position.
-                        startKey: self.nextPageStartKey
-                    },
-                    function(result)
-                    {
-                        self.loading = false;
-                        self.lastPageStartKey = self.nextPageStartKey;
-                        self.nextPageStartKey = result.length >= settings.itemsPerPage?  result.pop().id : undefined;
-                        self.currentPage++;
-                        self.currentPageContents = result;
+            if(typeof success === "function"){
+                success(page.content);
+            }
+        },
+        function(error)
+        {
+            self.loading = false;
+            console.error("Error on getting the first page: " + error);
 
-                        if(typeof success === "function"){
-                            success(result);
-                        }
-                    },
-                    function(error)
-                    {
-                        self.loading = false;
-                        console.error("Error on getting next page: " + error);
+            if(typeof fail === "function"){
+                fail(error);
+            }
+        });
+    }
 
-                        if(typeof fail === "function"){
-                            fail(error);
-                        }
-                    }
-                );
-            });
+    // Get the current page set. This is asynchonus as the service could still
+    // be initialising when the request comes in.
+    function getCurrentPage(success)
+    {
+        if(!self.serviceInitialised)
+        {
+            postInitFunction = success;
         }
-    };
-
-    this.getPrevPage = function(success, fail){
-        if(self.lastPageStartKey){
-            settingsService.getConfig(function(settings){
-                loading = true;
-
-                utilityCalls.getNewDocs(
-                    {
-                        itemsPerPage: settings.itemsPerPage +1, // We want to get a handle on the next page start position.
-                        startKey: self.lastPageStartKey,
-                        reverse: true
-                    },
-                    function(result)
-                    {
-                        self.loading = false;
-                        result.reverse();    // Its comming back in reverse order, lets fix that
-                        self.nextPageStartKey = self.lastPageStartKey;
-                        self.lastPageStartKey = result.pop().id;
-                        self.currentPage--;
-                        self.currentPageContents = result;
-
-                        if(typeof success === "function"){
-                            success(result);
-                        }
-                    },
-                    function(error)
-                    {
-                        self.loading = false;
-                        console.error("Error on getting previous page: " + error);
-
-                        if(typeof fail === "function"){
-                            fail(error);
-                        }
-                    }
-                );
-            });
+        else if(typeof success === "function")
+        {
+            success(self.currentPageContents);
         }
-    };
+    }
 
-    this.jumpToPage = function(pageNumber){
+    // Get the next page of search results
+    function getNextPage(success)
+    {
+        getPage(false, success);
+    }
 
-    };
+    // Get the previous page of search results
+    function getPreviousPage(success)
+    {
+        getPage(true, success);
+    }
 
     init();
 }]);
