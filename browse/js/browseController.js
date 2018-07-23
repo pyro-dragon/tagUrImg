@@ -1,35 +1,33 @@
-angular.module("browseModule").controller("browseController", ["$scope", "utilityCalls", "CollectionsService", function($scope, utilityCalls, CollectionsService)
+angular.module("browseModule").controller("browseController", ["$scope", "utilityCalls", "CollectionsService", "browseService", function($scope, utilityCalls, CollectionsService, browseService)
 {
-    $scope.displayImages = [];
+    $scope.displayImages = browseService.currentPageContents;
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
 
-    // Do an initial search
-    function search(params){
+    $scope.getNextPage = function(){
+        browseService.getNextPage((images)=>{$scope.displayImages = images; $scope.$apply();});
+    };
 
-        if(Array.isArray(params))
-        {
-            utilityCalls.getImagesByTags(params,
-                function(results)
-                {
-                    console.log("success!");
-                    $scope.displayImages = results;
-                },
-                function(error)
-                {
-                    console.log("Error!");
-                }
-            );
-        }
-    }
+    $scope.getPreviousPage = function(){
+         browseService.getPreviousPage((images)=>{$scope.displayImages = images; $scope.$apply();});
+    };
 
+    $scope.enableNextPage = function(){
+        return !browseService.atEnd;
+    };
+
+    $scope.enablePreviousPage = function(){
+        return !browseService.atStart;
+    };
+
+    $scope.loading = function(){
+        return browseService.loading;
+    };
 
     $scope.search = function()
     {
         if($scope.searchParams)
         {
-            var termsArray = $scope.searchParams.split(" ");
-
-            search(termsArray);
+            browseService.search($scope.searchParams.split(" "), undefined, false, (images)=>{$scope.displayImages = images; $scope.$apply();});
         }
     };
 

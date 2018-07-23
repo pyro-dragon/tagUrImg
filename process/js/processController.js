@@ -1,11 +1,43 @@
-angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, utilityCalls, settingsService, CollectionsService)
+angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "processService", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, processService, utilityCalls, settingsService, CollectionsService)
 {
-    $scope.currentImages = [];
+    $scope.currentImages = processService.currentPageContents;
     $scope.selectedImages = {};
     $scope.selectedCount = 0;
-    $scope.loading = false;
+    $scope.loading = processService.loading;
+    $scope.pageCount = processService.pageCount;
+    $scope.currentPage = processService.currentPage;
 
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
+    $scope.hasNext = !!processService.nextPageStartKey;
+    $scope.getNext = function(){
+        processService.getNextPage(updateVariables);
+    };
+    $scope.hasPrevious = !!processService.lastPageStartKey;
+    $scope.getPreviouse = function(){
+        processService.getPrevPage(updateVariables);
+    };
+
+    $scope.getNextPage = function(){
+        processService.getNextPage((images)=>{$scope.currentImages = images});
+    };
+
+    $scope.getPreviousPage = function(){
+         processService.getPreviousPage((images)=>{$scope.currentImages = images});
+    };
+
+    $scope.enableNextPage = function(){
+        return !processService.atEnd;
+    };
+
+    $scope.enablePreviousPage = function(){
+        return !processService.atStart;
+    };
+
+    $scope.loading = function(){
+        return processService.loading;
+    }
+
+    $scope.pageArray = [];
 
     $scope.saveSelected = function(){
 
@@ -14,7 +46,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         {
             if ($scope.selectedImages.hasOwnProperty(imageID))
             {
-                if($scope.selectedImages[imageID].doc.tags === undefined || $scope.selectedImages[imageID].doc.tags.length === 0)
+                if($scope.selectedImages[imageID].tags === undefined || $scope.selectedImages[imageID].tags.length === 0)
                 {
                     console.log("Not every selected image has tags set.");
                     $scope.error = "Not every selected image has tags set.";
@@ -41,9 +73,9 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                         var extractedData = [];
                         angular.forEach($scope.selectedImages, function(image)
                         {
-                            image.doc.modified = Date.now();
-                            image.doc.new = false;
-                            extractedData.push(image.doc);
+                            image.modified = Date.now();
+                            image.new = false;
+                            extractedData.push(image);
                         });
 
                         utilityCalls.putImage(extractedData,
@@ -90,7 +122,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         {
             angular.forEach(selectedImages, function(image)
             {
-                image.doc.tags = Array.from(new Set(image.doc.tags.concat(newTags))) ;
+                image.tags = Array.from(new Set(image.tags.concat(newTags))) ;
             });
         });
     };
@@ -98,13 +130,13 @@ angular.module("processModule", []).controller("processController", ["$scope", "
     $scope.selectImage = function(image)
     {
         // Add or remove the image from the selection
-        if($scope.selectedImages[image.id])
+        if($scope.selectedImages[image._id])
         {
-            delete $scope.selectedImages[image.id];
+            delete $scope.selectedImages[image._id];
             $scope.selectedCount--;
         }
         else {
-            $scope.selectedImages[image.id] = image;
+            $scope.selectedImages[image._id] = image;
             $scope.selectedCount++;
         }
 
@@ -116,7 +148,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         $scope.selectedImages = {};
 
         angular.forEach($scope.currentImages, function(image){
-            $scope.selectedImages[image.id] = image;
+            $scope.selectedImages[image._id] = image;
         });
 
         $scope.selectedCount = $scope.currentImages.length;
@@ -143,7 +175,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
             function()
             {
                 settingsService.banFile(
-                    image.id,
+                    image._id,
                     function()
                     {
                         $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
@@ -153,27 +185,11 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         );
     };
 
-    // Get the new items
-    function getOutstandingItems()
-    {
-        $scope.loading = true;
-        utilityCalls.getNewDocs(
-            function(result)
-            {
-                $scope.loading = false;
-                $scope.currentImages = result;
-            },
-            function(error)
-            {
-                $scope.loading = false;
-                console.log("Error getting outstanding items: " + error);
-            }
-        );
-    }
-
     function init()
     {
-        getOutstandingItems();
+        processService.getCurrentPage(function(content){
+            $scope.currentImages = content;
+        });
     }
 
     init();

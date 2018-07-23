@@ -21,7 +21,7 @@ collectionDb.get('_design/main').then(function (doc) {
     console.log("collectionDb dd rev:" + doc._rev);
 });
 
-var override = false;
+var override = true;
 var overrideConfig = false;
 var overrideCollection = false;
 var destroy = false;
@@ -33,11 +33,11 @@ db.get("_design/main", function (error, response) {
         {
             var ddoc = {
                 _id: '_design/main',
-                //_rev: "3-ea82b1e24445448b952d023950456c40",
+                //_rev: "2-12feb76b79b74a31a5298d4eb25264f2",
                 views: {
                     getNew: {
                         map: function(doc){
-                            if(doc.new === true)
+                            if(doc.tags && doc.tags.length === 0)
                             {
                                 emit(doc._id);
                             }
@@ -70,20 +70,31 @@ db.get("_design/main", function (error, response) {
         console.log("Main design document exists.");
     }
 });
-
+PouchDB.debug.enable('pouchdb:find');
 // Create tagging index
 db.createIndex(
     {
-        //fields: [{"name": "tags.[]", "type": "string"}],
         fields: [
             {
                 name: "tags.[]",
                 type: "string"
-            }
+            }, {name: "_id", type: "string"}
         ],
         name: "tag_index"
     }
 );
+
+// Create id index
+db.createIndex(
+    {
+        fields: ["_id"],
+        name: "id_index"
+    }
+).then(function (result) {
+  console.log(result);
+}).catch(function (err) {
+  console.log(err);
+});
 
 PouchDB.debug.enable('pouchdb:find');
 

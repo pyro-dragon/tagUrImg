@@ -31,33 +31,52 @@ angular.module("utils").service("utilityCalls", function()
         self.putImage(image.doc, success, fail);
     };
 
-    this.getNewDocs = function(success, fail, startKey, endKey)
+    this.getImagesByTags = function(tags, options, success, fail)
     {
-        var options = {};
-        startKey ? options.startkey = startKey : options.limit = 20;
-        endKey ? options.endkey = endKey : null;
-        newDocsQuery(false, options,
-            function (result)
-            {
-                if(typeof success === "function")
-                {
-                    success(result.rows);
+		db.find(
+			{
+				selector: {
+                    tags: {
+                        "$all": tags
+                    },
+                    _id: {
+                        "$gte": options && !options.reverse? options.startkey: undefined,
+                        "$lte": options && options.reverse? options.startkey: undefined
+                    }
+                },
+				limit: options? options.itemsPerPage: undefined,
+                sort: options && options.reverse? [{"_id": "desc"}]: undefined
+			}
+		)
+		.then(
+			function(result)
+			{
+                // Switch the order back to accending if we are going backwards
+                if(options && Array.isArray(result.docs) && options.reverse){
+                    result.docs = result.docs.reverse();
                 }
-            },
-            function (err)
-            {
-                if(typeof fail === "function")
-                {
-                    fail(err);
-                }
-            }
-        );
+
+				if(typeof success === "function")
+				{
+					success(result);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
     };
 
     //-------------------------------------------------------------------------
     // New Document functions
     //-------------------------------------------------------------------------
-    this.getNewDocCount = function(success, fail)
+    this.getNewDocCount = function(options, success, fail)
     {
         newDocsQuery(true, {},
             function (result)
@@ -68,7 +87,8 @@ angular.module("utils").service("utilityCalls", function()
                     {
                         success(result.rows[0].value);
                     }
-                    else {
+                    else
+                    {
                         success(0);
                     }
                 }
@@ -81,6 +101,37 @@ angular.module("utils").service("utilityCalls", function()
                 }
             }
         );
+    };
+
+	// Return the list of new docs
+    this.getNewDocs = function(options, success, fail)
+    {
+		db.find(
+			{
+				selector: {"tags": { "$size": 0}},
+				limit: options? options.itemsPerPage:undefined,
+				startkey: options? options.startKey: undefined,
+                descending: options? options.reverse: undefined
+			}
+		)
+		.then(
+			function(result)
+			{
+				if(typeof success === "function")
+				{
+					success(result.docs, result.total_rows);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
     };
 
     //-------------------------------------------------------------------------
@@ -286,34 +337,6 @@ angular.module("utils").service("utilityCalls", function()
 		});
 	};
 
-    this.getImagesByTags = function(tags, success, fail)
-    {
-        db.find(
-            {
-                selector: {"tags": { "$all": tags}},
-                limit: 40
-            }
-        )
-        .then(
-            function(result)
-            {
-                if(typeof success === "function")
-                {
-                    success(result.docs);
-                }
-            }
-        )
-        .catch(
-            function(error)
-            {
-                if(typeof fail === "function")
-                {
-                    fail(error);
-                }
-            }
-        );
-    };
-
     //-------------------------------------------------------------------------
     // Collection functions
     //-------------------------------------------------------------------------
@@ -511,5 +534,41 @@ angular.module("utils").service("utilityCalls", function()
 
             return docs;
         }
+    };
+
+    // Basic Mango Search
+    this.mangoSearch = function(search, options, success, fail)
+    {
+		db.find(
+			{
+				selector: search,
+				limit: options? options.itemsPerPage : undefined,
+				startkey: options? (options.reverse? options.endIndex : options.startIndex) : undefined,
+                sort: options && options.reverse? [{"_id": "desc"}] : undefined
+			}
+		)
+		.then(
+			function(result)
+			{
+                // Switch the order back to accending if we are going backwards
+                if(options && Array.isArray(result.docs) && options.reverse){
+                    result.docs = result.docs.reverse();
+                }
+
+				if(typeof success === "function")
+				{
+					success(result.docs);
+				}
+			}
+		)
+		.catch(
+			function(error)
+			{
+				if(typeof fail === "function")
+				{
+					fail(error);
+				}
+			}
+		);
     };
 });
