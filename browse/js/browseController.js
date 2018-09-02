@@ -4,11 +4,15 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
 
     $scope.getNextPage = function(){
-        browseService.getNextPage((images)=>{$scope.displayImages = images; $scope.$apply();});
+        browseService.getNextPage((images)=>{
+            $scope.displayImages = images; $scope.$apply();
+        });
     };
 
     $scope.getPreviousPage = function(){
-         browseService.getPreviousPage((images)=>{$scope.displayImages = images; $scope.$apply();});
+         browseService.getPreviousPage((images)=>{
+             $scope.displayImages = images; $scope.$apply();
+         });
     };
 
     $scope.enableNextPage = function(){
@@ -25,9 +29,20 @@ angular.module("browseModule").controller("browseController", ["$scope", "utilit
 
     $scope.search = function()
     {
+        $scope.noResultsFound = false;
+
         if($scope.searchParams)
         {
-            browseService.search($scope.searchParams.split(" "), undefined, false, (images)=>{$scope.displayImages = images; $scope.$apply();});
+            browseService.search($scope.searchParams.split(" "), undefined, false, (images)=>{
+                if(images.length){
+                    $scope.displayImages = images;
+                }
+                else{
+                    $scope.noResultsFound = true;
+                }
+
+                $scope.$apply();
+            });
         }
     };
 

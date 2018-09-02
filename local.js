@@ -21,7 +21,7 @@ collectionDb.get('_design/main').then(function (doc) {
     console.log("collectionDb dd rev:" + doc._rev);
 });
 
-var override = true;
+var override = false;
 var overrideConfig = false;
 var overrideCollection = false;
 var destroy = false;

@@ -35,39 +35,42 @@ angular.module("browseModule").service("browseService", ["utilityCalls", "settin
                 utilityCalls.getImagesByTags(tags, {startkey: pageIndex, reverse: reverse, itemsPerPage: settings.itemsPerPage + 1},
                     function(results)
                     {
-                        self.currentSearch = tags;
-                        self.loading = false;
-                        self.currentPageContents = results.docs;
+                        if(results.docs.length){
 
-                        // Check if this is a fresh search
-                        if(pageIndex === undefined){
-                            // Reset page count params
-                            delete self.nextPageStartKey;
-                            self.firstItemId = results.docs[0]._id;
+                            self.currentSearch = tags;
+                            self.loading = false;
+                            self.currentPageContents = results.docs;
+
+                            // Check if this is a fresh search
+                            if(pageIndex === undefined){
+                                // Reset page count params
+                                delete self.nextPageStartKey;
+                                self.firstItemId = results.docs[0]._id;
+                                self.atStart = false;
+                                self.atEnd = false;
+                            }
+
+                            // Reset the flags
                             self.atStart = false;
                             self.atEnd = false;
-                        }
 
-                        // Reset the flags
-                        self.atStart = false;
-                        self.atEnd = false;
+                            // Grab the handle for the previouse page
+                            self.lastPageStartKey = results.docs[0]._id;
 
-                        // Grab the handle for the previouse page
-                        self.lastPageStartKey = results.docs[0]._id;
+                            // Get the handle for the next page
+                            if(results.docs.length === settings.itemsPerPage + 1){
+                                self.nextPageStartKey = results.docs.pop()._id;
+                            }
+                            else{
+                                // We are at the end of the results list
+                                delete self.nextPageStartKey;
+                                self.atEnd = true;
+                            }
 
-                        // Get the handle for the next page
-                        if(results.docs.length === settings.itemsPerPage + 1){
-                            self.nextPageStartKey = results.docs.pop()._id;
-                        }
-                        else{
-                            // We are at the end of the results list
-                            delete self.nextPageStartKey;
-                            self.atEnd = true;
-                        }
-
-                        // Check if we are at the start of the results list
-                        if(self.lastPageStartKey === self.firstItemId){
-                            self.atStart = true;
+                            // Check if we are at the start of the results list
+                            if(self.lastPageStartKey === self.firstItemId){
+                                self.atStart = true;
+                            }
                         }
 
                         if(typeof success === "function")
@@ -79,6 +82,11 @@ angular.module("browseModule").service("browseService", ["utilityCalls", "settin
                     {
                         self.loading = false;
                         console.log("Error!");
+
+                        if(typeof fail === "function")
+                        {
+                            fail(error);
+                        }
                     }
                 );
             });
