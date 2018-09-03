@@ -31,6 +31,16 @@ angular.module("utils").service("utilityCalls", function()
         self.putImage(image.doc, success, fail);
     };
 
+    this.deleteImages = function(images, success, fail)
+    {
+        angular.forEach(images, function(image)
+        {
+            image._deleted = true;
+        });
+
+        self.putImage(images, success, fail);
+    };
+
     this.getImagesByTags = function(tags, options, success, fail)
     {
 		db.find(
