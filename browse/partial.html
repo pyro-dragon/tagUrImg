@@ -6,7 +6,15 @@
         <span class="input-group-btn"><button class="btn btn-default" type="submit" ng-click="search()">Search</button></span>
     </div>
 </form>
-<div>
+<p></p>
+<div ng-if="noResultsFound" class="alert alert-danger" role="alert">
+    No results found.
+</div>
+<div ng-if="error" class="alert alert-danger" role="alert">
+    {{error}}
+</div>
+
+<div ng-if="displayImages.length">
     <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage() || loading()" class="btn btn-default">Previous</button>
     <button ng-click="getNextPage()" ng-disabled="!enableNextPage() || loading()" class="btn btn-default">Next</button>
     <p ng-if="loading()">
@@ -24,4 +32,9 @@
             </div>
         </div>
     </div>
+</div>
+
+<div ng-if="displayImages.length">
+    <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage() || loading()" class="btn btn-default">Previous</button>
+    <button ng-click="getNextPage()" ng-disabled="!enableNextPage() || loading()" class="btn btn-default">Next</button>
 </div>

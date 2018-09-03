@@ -1,28 +1,23 @@
 angular.module("processModule", []).controller("processController", ["$scope", "$uibModal", "processService", "utilityCalls", "settingsService", "CollectionsService", function($scope, $uibModal, processService, utilityCalls, settingsService, CollectionsService)
 {
-    $scope.currentImages = processService.currentPageContents;
+    $scope.displayImages = processService.currentPageContents;
     $scope.selectedImages = {};
     $scope.selectedCount = 0;
-    $scope.loading = processService.loading;
-    $scope.pageCount = processService.pageCount;
-    $scope.currentPage = processService.currentPage;
-
     $scope.addItemToCollection = CollectionsService.addItemToCollection;
-    $scope.hasNext = !!processService.nextPageStartKey;
-    $scope.getNext = function(){
-        processService.getNextPage(updateVariables);
-    };
-    $scope.hasPrevious = !!processService.lastPageStartKey;
-    $scope.getPreviouse = function(){
-        processService.getPrevPage(updateVariables);
-    };
+
+    function init(){
+
+        if(!processService.currentPageContents.length){
+            $scope.getNextPage();
+        }
+    }
 
     $scope.getNextPage = function(){
-        processService.getNextPage((images)=>{$scope.currentImages = images});
+        processService.getNextPage((images)=>{$scope.displayImages = images; $scope.$apply();});
     };
 
     $scope.getPreviousPage = function(){
-         processService.getPreviousPage((images)=>{$scope.currentImages = images});
+         processService.getPreviousPage((images)=>{$scope.displayImages = images; $scope.$apply();});
     };
 
     $scope.enableNextPage = function(){
@@ -35,9 +30,20 @@ angular.module("processModule", []).controller("processController", ["$scope", "
 
     $scope.loading = function(){
         return processService.loading;
-    }
+    };
 
-    $scope.pageArray = [];
+    $scope.search = function()
+    {
+        if($scope.searchParams)
+        {
+            processService.search($scope.searchParams.split(" "), undefined, false, (images)=>{
+                $scope.displayImages = images; $scope.$apply();
+            },
+            (error)=>{
+                $scope.error = error;
+            });
+        }
+    };
 
     $scope.saveSelected = function(){
 
@@ -85,8 +91,8 @@ angular.module("processModule", []).controller("processController", ["$scope", "
 
                             angular.forEach($scope.selectedImages, function(selectedImage)
                             {
-                                var index = $scope.currentImages.indexOf(selectedImage);
-                                $scope.currentImages.splice($scope.currentImages.indexOf(selectedImage), 1);
+                                var index = $scope.displayImages.indexOf(selectedImage);
+                                $scope.displayImages.splice($scope.displayImages.indexOf(selectedImage), 1);
                             });
 
                             $scope.selectedImages = {};
@@ -147,11 +153,11 @@ angular.module("processModule", []).controller("processController", ["$scope", "
 
         $scope.selectedImages = {};
 
-        angular.forEach($scope.currentImages, function(image){
+        angular.forEach($scope.displayImages, function(image){
             $scope.selectedImages[image._id] = image;
         });
 
-        $scope.selectedCount = $scope.currentImages.length;
+        $scope.selectedCount = $scope.displayImages.length;
     };
 
     $scope.selectNone = function(){
@@ -163,7 +169,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
 
     $scope.invertSelection = function(){
 
-        angular.forEach($scope.currentImages, function(image){
+        angular.forEach($scope.displayImages, function(image){
             $scope.selectImage(image);
         });
     };
@@ -178,19 +184,15 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                     image._id,
                     function()
                     {
-                        $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
+                        $scope.displayImages.splice($scope.displayImages.indexOf(image), 1);
+                        $scope.$apply();
                     }
                 );
+
+                // TODO: Fetch some replacement images to fill in where the deleted ones where
             }
         );
     };
-
-    function init()
-    {
-        processService.getCurrentPage(function(content){
-            $scope.currentImages = content;
-        });
-    }
 
     init();
 }]);

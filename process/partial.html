@@ -10,7 +10,7 @@
         <button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
     </div>
 </div>
-<div>
+<div ng-if="displayImages.length">
     <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage() || loading()" class="btn btn-default">Previous</button>
     <button ng-click="getNextPage()" ng-disabled="!enableNextPage() || loading()" class="btn btn-default">Next</button>
     <p ng-if="loading()">
@@ -21,23 +21,8 @@
     <strong>Error!</strong> {{error}}
 </div>
 
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        <li>
-            <a class="clickable" aria-label="Previous" ng-disabled="!hasPrevious" ng-click="getPreviouse()">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-            <li ng-repeat="page in pageArray"><a ng-if="page == currentPage" aria-label="Page {{page}}">*{{page}}*</a><a ng-if="page != currentPage" aria-label="Page {{page}}">{{page}}</a></li>
-        <li>
-            <a class="clickable" aria-label="Next" ng-disabled="!hasNext" ng-click="getNext()">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
 <div class="image-container">
-    <div ng-repeat="image in currentImages" class="image">
+    <div ng-repeat="image in displayImages" class="image">
         <div class="image-active-zone">
             <img ng-class="{'selected':selectedImages[image._id]}" ng-src="{{image._id}}" ng-click="selectImage(image)" />
             <div class="image-buttons">
@@ -57,18 +42,8 @@
         </p>
     </div>
 </div>
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        <li>
-            <a class="clickable" aria-label="Previous" ng-disabled="!hasPrevious" ng-click="getPreviouse()">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-            <li ng-repeat="page in pageArray"><a ng-if="page == currentPage" aria-label="Page {{page}}">*{{page}}*</a><a ng-if="page != currentPage" aria-label="Page {{page}}">{{page}}</a></li>
-        <li>
-            <a class="clickable" aria-label="Next" ng-disabled="!hasNext" ng-click="getNext()">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+
+<div ng-if="displayImages.length">
+    <button ng-click="getPreviousPage()" ng-disabled="!enablePreviousPage() || loading()" class="btn btn-default">Previous</button>
+    <button ng-click="getNextPage()" ng-disabled="!enableNextPage() || loading()" class="btn btn-default">Next</button>
+</div>
