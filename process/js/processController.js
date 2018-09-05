@@ -186,7 +186,7 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                     {
                         angular.forEach($scope.selectedImages, function(image)
                         {
-                            $scope.displayImages.splice($scope.displayImages.indexOf(image), 1);
+                            $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
                         });
 
                         $scope.selectedImages = {};
