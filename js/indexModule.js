@@ -5,6 +5,7 @@ angular.module("indexModule", [
     "ui.bootstrap",
     "ui.select",
     "utils",
+    "imageModule",
     "galleryModule",
     "scannerModule",
     "confirmationDialogueModule",

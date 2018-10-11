@@ -24,7 +24,8 @@
 <div class="image-container">
     <div ng-repeat="image in displayImages" class="image">
         <div class="image-active-zone">
-            <img ng-class="{'selected':selectedImages[image._id]}" ng-src="{{image._id}}" ng-click="selectImage(image)" />
+            <!-- <img ng-class="{'selected':selectedImages[image._id]}" ng-src="{{image._id}}" ng-click="selectImage(image)" /> -->
+            <thumbnail ng-class="{'selected':selectedImages[image._id]}" src="image._id" ng-click="selectImage(image)"></thumbnail>
             <div class="image-buttons">
                 <button class="btn btn-danger" ng-click="deleteImage(image)">
                     <i class="fa fa-trash-o" aria-hidden="true"></i>

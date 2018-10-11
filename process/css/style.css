@@ -16,7 +16,7 @@ img{
     min-width: 100px;
 }
 
-.selected{
+.selected img{
     border: solid green 4px;
 }
 
