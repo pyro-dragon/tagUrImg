@@ -192,10 +192,12 @@ angular.module("processModule", []).controller("processController", ["$scope", "
                     {
                         angular.forEach($scope.selectedImages, function(image)
                         {
-                            $scope.currentImages.splice($scope.currentImages.indexOf(image), 1);
+                            $scope.displayImages.splice($scope.displayImages.indexOf(image), 1);
                         });
 
                         $scope.selectedImages = {};
+
+                        // TODO: Load in new files to replace the old ones.
 
                         $scope.$apply();
                     }
