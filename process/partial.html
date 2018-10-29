@@ -8,6 +8,7 @@
     <div>
         <button class="btn btn-primary" ng-click="openTagManager(selectedImages)" ng-disabled="!selectedCount">Add tags</button>
         <button class="btn btn-primary" ng-click="saveSelected()" ng-disabled="!selectedCount">Save selected</button>
+        <button class="btn btn-danger" ng-click="deleteSelected()" ng-disabled="!selectedCount">Delete selected</button>
     </div>
 </div>
 <div ng-if="displayImages.length">

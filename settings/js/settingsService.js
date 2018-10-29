@@ -81,6 +81,17 @@ angular.module("settingsModule").service("settingsService", ["utilityCalls", fun
             fail);
     };
 
+    this.banFiles = function(paths, success, fail){
+
+        self.getConfig(function(settings){
+
+            // Create a combined set of banned files and current selection for deletion, the convert back to an arrya
+            settings.bannedFiles = Array.from(new Set([...new Set(settings.bannedFiles), ...new Set(paths)]));
+
+            self.saveConfig(success, fail);
+        });
+    };
+
     this.banFile = function(path, success, fail)
     {
         function addBannedPath(path)

@@ -174,6 +174,38 @@ angular.module("processModule", []).controller("processController", ["$scope", "
         });
     };
 
+    $scope.deleteSelected = function()
+    {
+        var testArr = Object.values($scope.selectedImages);
+        utilityCalls.deleteImages(
+            Object.values($scope.selectedImages), function()
+            {
+                var paths = [];
+                angular.forEach($scope.selectedImages, function(image)
+                {
+                    paths.push (image._id);
+                });
+
+                settingsService.banFiles(
+                    paths,
+                    function()
+                    {
+                        angular.forEach($scope.selectedImages, function(image)
+                        {
+                            $scope.displayImages.splice($scope.displayImages.indexOf(image), 1);
+                        });
+
+                        $scope.selectedImages = {};
+
+                        // TODO: Load in new files to replace the old ones.
+
+                        $scope.$apply();
+                    }
+                );
+            }
+        );
+    };
+
     $scope.deleteImage = function(image)
     {
         utilityCalls.deleteImage(
